@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ShowTrackerCP</string>
+    <string name="action_settings">Settings</string>
+    <string name="search_show">Search Show</string>
+    <string name="search_show_hint">Enter text...</string>
+    <string name="menu_recent_searches">Recent Searches...</string>
+    <string name="title_activity_search_for_show">SearchForShowActivity</string>
+    <string name="completed">Completed</string>
+    <string name="watching">Watching</string>
+    <string name="to_watch">To Watch</string>
+</resources>
