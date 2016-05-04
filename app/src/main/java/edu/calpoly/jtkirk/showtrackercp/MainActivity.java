@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         initLayout();
         setListeners();
 
-//        showListView = (ListView) findViewById(R.id.listViewGroupWatching);
+//        showListView = (ListView) findViewById(R.id.listViewGroupWatching);f
 
         //GetSeriesBanner banner = new GetSeriesBanner(this);
         //banner.execute();
