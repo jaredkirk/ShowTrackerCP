@@ -1,29 +1,20 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,22 +25,16 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-//API Key 9EC195CB619149ED
 public class MainActivity extends AppCompatActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>,
         ShowView.OnShowChangeListener {
-//    private Button searchShowButton;
-//    private EditText searchShowEditText;
     private TextView listView;
     private String mirrorPath = "http://thetvdb.com";
-    //private SQLiteDatabase database;
-//    private ListView showListView;
     protected ShowViewAdapter showViewAdapter;
     private ArrayList<Show> showList;
     private android.support.v7.view.ActionMode mActionMode;
     private android.support.v7.view.ActionMode.Callback mActionModeCallback;
-    private ShowCursorAdapter showCursorAdapter;
-    private Button startSearchActivity;
 
+    private ShowCursorAdapter showCursorAdapter;
     private PagerAdapter pagerAdapter;
     private ViewPager viewPager;
 
@@ -93,46 +78,21 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
             }
         });
-//
-//        searchShowButton = new Button(this);
-//        searchShowEditText = new EditText(this);
+
         listView = new TextView(this);
         showList = new ArrayList<Show>();
         showViewAdapter = new ShowViewAdapter(this, showList);
-        //showListView = new ListView(this);
-        //showCursorAdapter = new ShowCursorAdapter(this, null, 0);
 
-        //startSearchActivity = (Button) findViewById(R.id.search_show_button_start_activity);
-//        searchShowEditText = (EditText) findViewById(R.id.search_show_text);
         listView = (TextView) findViewById(R.id.listView);
-//        searchShowButton = (Button) findViewById(R.id.search_show_button);
 
         showCursorAdapter = new ShowCursorAdapter(this, null, 0);
 
-//        LoaderManager loaderManagerCompleted = getSupportLoaderManager();
-//        loaderManagerCompleted.initLoader(COMPLETED_INT, null, this);
-
-//        LoaderManager loaderManagerWatching = getSupportLoaderManager();
-//        loaderManagerWatching.initLoader(WATCHING_INT, null, this);
-
         initLayout();
         setListeners();
-
-//        showListView = (ListView) findViewById(R.id.listViewGroupWatching);f
-
-        //GetSeriesBanner banner = new GetSeriesBanner(this);
-        //banner.execute();
-
-        //GetApi apiTest = new GetApi();
-        //apiTest.execute();
         //addShow(new Show(0, 0, "en", "Game of Thrones", "", "", "", "", "", "Watching", 10));
     }
 
     public void initLayout() {
-//        assert showListView != null;
-//        showListView.setAdapter(showViewAdapter);
-
-        //registerForContextMenu(showListView);
         mActionModeCallback = new ActionMode.Callback() {
 
             // Called when the action mode is created; startActionMode() was called
@@ -184,74 +144,10 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         CharSequence text = "Long Press!";
         int duration = Toast.LENGTH_SHORT;
         final Toast toast = Toast.makeText(this, text, duration);
-//        showListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                toast.show();
-//                return false;
-//            }
-//                positionToRemove = position;
-//                if (mActionMode != null) {
-//                    return false;
-//                }
-//
-//                // Start the CAB using the ActionMode.Callback defined above
-//                mActionMode = startSupportActionMode(mActionModeCallback);
-//                view.setSelected(true);
-//                return true;
-//            }
-//        });
     }
 
     public void setListeners() {
-//        startSearchActivity.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent myIntent = new Intent(MainActivity.this, SearchForShowActivity.class);
-//                myIntent.putExtra("searchValue", searchShowEditTextMain.getText().toString()); //Optional parameters
-//                MainActivity.this.startActivity(myIntent);
-//            }
-//        });
 
-        // Allows the user to press the button to search for a show.
-//        searchShowButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String show = searchShowEditText.getText().toString();
-//                if (show != null) {
-//                    showList.clear();
-//                    searchShow(show); //Calls API
-//                    //addShowView(show); //Currently doesn't call API for this
-//                }
-//                searchShowEditText.setText("");
-//                InputMethodManager imm = (InputMethodManager)
-//                        getSystemService(Context.INPUT_METHOD_SERVICE);
-//
-//                imm.hideSoftInputFromWindow(searchShowEditText.getWindowToken(), 0);
-//            }
-//        });
-//
-//        // Allows the user to press "enter" to search for a show.
-//        searchShowEditText.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-//                    if (event.getAction() == KeyEvent.ACTION_UP) {
-//                        String show = searchShowEditText.getText().toString();
-//                        if (!show.equals("")) {
-//                            //displayResults();
-//                        }
-//                        searchShowEditText.setText("");
-//                        InputMethodManager imm = (InputMethodManager)
-//                                getSystemService(Context.INPUT_METHOD_SERVICE);
-//
-//                        imm.hideSoftInputFromWindow(searchShowEditText.getWindowToken(), 0);
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -272,59 +168,13 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         if (id == R.id.action_settings) {
             return true;
         }
+        // This will create a new activity to search for shows.
+        if (id == R.id.action_search) {
+            Intent myIntent = new Intent(this, SearchForShowActivity.class);
+            MainActivity.this.startActivity(myIntent);
+        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public String searchShow(String show) {
-        Log.d("searchShow", "Searching for " + show + "...");
-        //database.execSQL("INSERT INTO recent_search VALUES('" + show + "');");
-
-        GetShowInformation getShowInformation = new GetShowInformation();
-
-        getShowInformation.execute(show);
-        try {
-            getShowInformation.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        //Loop through all the series found
-        NodeList seriesList = getShowInformation.getDoc().getElementsByTagName("Series");
-        for (int temp = 0; temp < seriesList.getLength(); temp++) {
-            Node nNode = seriesList.item(temp);
-
-            //The node is the "Series" root node. Traverse this to find information about this show.
-            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element eElement = (Element) nNode;
-                Log.d("seriesname", "SeriesName: " + eElement
-                        .getElementsByTagName("SeriesName")
-                        .item(0)
-                        .getTextContent());
-
-                //Adds a view to the screen
-//                addShowView(eElement
-//                        .getElementsByTagName("SeriesName")
-//                        .item(0)
-//                        .getTextContent());
-
-//                addShow(new Show(0,
-//                        Integer.parseInt(getElementFromNode(eElement, "id")),
-//                        getElementFromNode(eElement, "language"),
-//                        getElementFromNode(eElement, "SeriesName"),
-//                        getElementFromNode(eElement, "banner"),
-//                        getElementFromNode(eElement, "Overview"),
-//                        getElementFromNode(eElement, "FirstAired"),
-//                        getElementFromNode(eElement, "Network"),
-//                        getElementFromNode(eElement, "IMDB_ID"),
-//                        "",
-//                        0));
-            }
-        }
-        // User can expand for information.
-        return "";
     }
 
     /**

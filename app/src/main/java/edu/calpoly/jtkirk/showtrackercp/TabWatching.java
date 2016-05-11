@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +26,13 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     private ArrayList<Show> showList;
     private ShowCursorAdapter showCursorAdapter;
 
+    private ActionMode.Callback mActionModeCallback;
+    private ActionMode mActionMode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        initLayout();
 //        ((MainActivity)getActivity()).addShow(new Show(0, 0, "en", "Community", "", "", "", "", "", "Completed", 37));
     }
 
@@ -84,6 +87,10 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     }
 
     public void fillData() {
-        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+        //getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+    }
+
+    public void initLayout() {
+
     }
 }
