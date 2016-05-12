@@ -1,6 +1,5 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
-import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -8,20 +7,14 @@ import android.util.Log;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
-    private Cursor cursor;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs, Cursor cursor) {
+    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
-        this.cursor = cursor;
     }
 
     @Override
     public Fragment getItem(int position) {
-        if (cursor == null) // shouldn't happen
-            return null;
-
-        cursor.moveToPosition(position);
 
         switch (position) {
             case 0:
@@ -40,28 +33,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        if (cursor == null)
-            return 0;
-        else
-            return cursor.getCount();
+        return mNumOfTabs;
     }
-
-    public void swapCursor(Cursor c) {
-        if (cursor == c)
-            return;
-
-        this.cursor = c;
-        notifyDataSetChanged();
-    }
-
-    public Cursor getCursor() {
-        return cursor;
-    }
-
-//    @Override
-//    public int getCount() {
-//        return mNumOfTabs;
-//    }
 
     @Override
     public int getItemPosition(Object object) {

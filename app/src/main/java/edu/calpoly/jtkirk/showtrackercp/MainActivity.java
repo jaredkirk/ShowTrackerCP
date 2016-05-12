@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), null);
+                (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
