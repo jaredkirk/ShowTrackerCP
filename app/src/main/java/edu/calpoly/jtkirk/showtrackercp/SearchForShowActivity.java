@@ -1,5 +1,6 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -33,6 +35,7 @@ public class SearchForShowActivity extends AppCompatActivity {
 
     private android.support.v7.view.ActionMode mActionMode;
     private android.support.v7.view.ActionMode.Callback mActionModeCallback;
+
     private EditText searchShowEditText;
     private Button searchShowButton;
     private ArrayList<Show> showList;
@@ -72,27 +75,73 @@ public class SearchForShowActivity extends AppCompatActivity {
         showListView.setAdapter(showViewAdapter);
         registerForContextMenu(showListView);
 
-        //Setup for a long press.
+        mActionModeCallback = new ActionMode.Callback() {
+
+            // Called when the action mode is created; startActionMode() was called
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate a menu resource providing context menu items
+//                Log.d("menu", "menu inflater");
+//                MenuInflater inflater = mode.getMenuInflater();
+//                inflater.inflate(R.menu.actionmenu, menu);
+//                return true;
+                return false;
+            }
+
+            // Called each time the action mode is shown. Always called after onCreateActionMode, but
+            // may be called multiple times if the mode is invalidated.
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false; // Return false if nothing is done
+            }
+
+            // Called when the user selects a contextual menu item
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.menu_remove:
+//                        for(int i = 0; i < m_arrJokeList.size(); i++) {
+//                            if(m_arrFilteredJokeList.get(positionToRemove).getJoke().equals(m_arrJokeList.get(i).getJoke())) {
+//                                m_arrJokeList.remove(i);
+//                            }
+//                        }
+//                        m_arrFilteredJokeList.remove(positionToRemove);
+//                        m_jokeAdapter.notifyDataSetChanged();
+//                        mode.finish(); // Action picked, so close the CAB
+//                        return true;
+//                    default:
+//                        return false;
+//                }
+                return false;
+            }
+
+            // Called when the user exits the action mode
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                mActionMode = null;
+            }
+        };
+
         CharSequence text = "Long Press!";
         int duration = Toast.LENGTH_SHORT;
         final Toast toast = Toast.makeText(this, text, duration);
-//        showListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                toast.show();
-//                return false;
-//            }
-//                positionToRemove = position;
-//                if (mActionMode != null) {
-//                    return false;
-//                }
-//
-//                // Start the CAB using the ActionMode.Callback defined above
-//                mActionMode = startSupportActionMode(mActionModeCallback);
-//                view.setSelected(true);
-//                return true;
-//            }
-//        });
+
+        showListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //positionToRemove = position;
+                if (mActionMode != null) {
+                    return false;
+                }
+                passShowBack(showList.get(position));
+                toast.show();
+
+                // Start the CAB using the ActionMode.Callback defined above
+                mActionMode = startSupportActionMode(mActionModeCallback);
+                view.setSelected(true);
+                return true;
+            }
+        });
     }
 
     public void setListeners() {
@@ -178,28 +227,30 @@ public class SearchForShowActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //Loop through all the series found
-        NodeList seriesList = getShowInformation.getDoc().getElementsByTagName("Series");
-        for (int temp = 0; temp < seriesList.getLength(); temp++) {
-            Node nNode = seriesList.item(temp);
+        if(getShowInformation.getDoc() != null) {
+            //Loop through all the series found
+            NodeList seriesList = getShowInformation.getDoc().getElementsByTagName("Series");
+            for (int temp = 0; temp < seriesList.getLength(); temp++) {
+                Node nNode = seriesList.item(temp);
 
-            //The node is the "Series" root node. Traverse this to find information about this show.
-            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element eElement = (Element) nNode;
+                //The node is the "Series" root node. Traverse this to find information about this show.
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
 
-                searchedShow = new Show(0,
-                        Integer.parseInt(getElementFromNode(eElement, "id")),
-                        getElementFromNode(eElement, "language"),
-                        getElementFromNode(eElement, "SeriesName"),
-                        getElementFromNode(eElement, "banner"),
-                        getElementFromNode(eElement, "Overview"),
-                        getElementFromNode(eElement, "FirstAired"),
-                        getElementFromNode(eElement, "Network"),
-                        getElementFromNode(eElement, "IMDB_ID"),
-                        "",
-                        0);
+                    searchedShow = new Show(0,
+                            Integer.parseInt(getElementFromNode(eElement, "id")),
+                            getElementFromNode(eElement, "language"),
+                            getElementFromNode(eElement, "SeriesName"),
+                            getElementFromNode(eElement, "banner"),
+                            getElementFromNode(eElement, "Overview"),
+                            getElementFromNode(eElement, "FirstAired"),
+                            getElementFromNode(eElement, "Network"),
+                            getElementFromNode(eElement, "IMDB_ID"),
+                            "",
+                            0);
 
-                addShowView(searchedShow);
+                    addShowView(searchedShow);
+                }
             }
         }
 
@@ -245,5 +296,31 @@ public class SearchForShowActivity extends AppCompatActivity {
             return element.getElementsByTagName(elementName).item(0).getTextContent();
         }
         return "";
+    }
+
+    /**
+     * Saves the show's data and returns it to the MainActivity
+     * @param show The show to send back.
+     */
+    public void passShowBack(Show show) {
+        Log.d("passback", "Show passing back: " + show.getName());
+        Intent resultIntent = new Intent();
+
+        //Pass back the show's values to MainActivity to put in the database.
+
+        resultIntent.putExtra(ShowTable.SERIES_KEY_ID, show.getId());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_NAME, show.getName());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_BANNER, show.getBanner());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_OVERVIEW, show.getOverview());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_FIRST_AIRED, show.getFirstAired());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_STATUS, show.getStatus());
+        resultIntent.putExtra(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
+
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 }

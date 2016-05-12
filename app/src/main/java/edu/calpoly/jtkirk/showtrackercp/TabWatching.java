@@ -29,10 +29,13 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     private ActionMode.Callback mActionModeCallback;
     private ActionMode mActionMode;
 
+    private Context context;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initLayout();
+        context = getContext();
 //        ((MainActivity)getActivity()).addShow(new Show(0, 0, "en", "Community", "", "", "", "", "", "Completed", 37));
     }
 
@@ -69,9 +72,11 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
                         ShowTable.SERIES_KEY_IMDB_ID, ShowTable.SERIES_KEY_STATUS, ShowTable.SERIES_KEY_EPISODES_SEEN};
 
                 Uri uri2 = Uri.parse(ShowContentProvider.CONTENT_URI + "/filter/" + 4);
+                Log.d("uhoh", "ok");
 
                 return new android.support.v4.content.CursorLoader(getActivity(), uri2, projection2, null, null, null);
         }
+        Log.d("uhoh", "Invalid ID passed in: " + id);
         return null;
     }
 
@@ -79,6 +84,7 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         showCursorAdapter.swapCursor(data);
         showCursorAdapter.setOnJokeChangeListener((MainActivity) getActivity());
+        showCursorAdapter.notifyDataSetChanged();
     }
 
     @Override

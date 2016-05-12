@@ -1,5 +1,6 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
+                (getSupportFragmentManager(), tabLayout.getTabCount(), null);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -171,7 +172,8 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         // This will create a new activity to search for shows.
         if (id == R.id.action_search) {
             Intent myIntent = new Intent(this, SearchForShowActivity.class);
-            MainActivity.this.startActivity(myIntent);
+            startActivityForResult(myIntent, 1);
+            //MainActivity.this.startActivity(myIntent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -198,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
      * @param show Show to add.
      */
     protected void addShow(Show show) {
+        Log.d("show", "Adding show");
         Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
         ContentValues contentValues = new ContentValues();
 
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         Uri uriReturn = getContentResolver().insert(uri, contentValues);
         int id = Integer.parseInt(uriReturn.getLastPathSegment());
         show.setId(id);
-        //fillData();
+        fillData();
     }
 
     @Override
@@ -292,19 +295,23 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         getContentResolver().update(uri, contentValues, null, null);
 
         showCursorAdapter.setOnJokeChangeListener(null);
+
         //fillData();
     }
 
-//    public void fillData() {
-//        Log.d("fillData", "current item: " + viewPager.getCurrentItem());
+    public void fillData() {
+        Log.d("fillData", "current item: " + viewPager.getCurrentItem());
+        pagerAdapter.notifyDataSetChanged();
+
 //        if(viewPager.getCurrentItem() == 0) {
-//            getSupportLoaderManager().restartLoader(0, null, (TabWatching)pagerAdapter.getItem(viewPager.getCurrentItem()));
+//            pagerAdapter.notifyDataSetChanged();
+//            //getSupportLoaderManager().restartLoader(0, null, (TabWatching)pagerAdapter.getItem(viewPager.getCurrentItem()));
 //        }
 //        else if(viewPager.getCurrentItem() == 1) {
 //            getSupportLoaderManager().restartLoader(0, null, (TabCompleted) pagerAdapter.getItem(viewPager.getCurrentItem()));
 //        }
 //        //showListView.setAdapter(showCursorAdapter);
-//    }
+    }
 
 
 //    @Override
@@ -326,5 +333,35 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 //    }
     public ShowCursorAdapter getShowCursorAdapter() {
         return showCursorAdapter;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (1) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    //String newText = data.getStringExtra(PUBLIC_STATIC_STRING_IDENTIFIER);
+                    // TODO Update your TextView.
+                    Log.d("test", "Returned from activity" + data.getStringExtra(ShowTable.SERIES_KEY_NAME));
+                    Bundle extras = data.getExtras();
+                    Show show = new Show(
+                            extras.getInt(ShowTable.SERIES_KEY_ID),
+                            extras.getInt(ShowTable.SERIES_KEY_TVDB_ID),
+                            extras.getString(ShowTable.SERIES_KEY_LANGUAGE),
+                            extras.getString(ShowTable.SERIES_KEY_NAME),
+                            extras.getString(ShowTable.SERIES_KEY_BANNER),
+                            extras.getString(ShowTable.SERIES_KEY_OVERVIEW),
+                            extras.getString(ShowTable.SERIES_KEY_FIRST_AIRED),
+                            extras.getString(ShowTable.SERIES_KEY_NETWORK),
+                            extras.getString(ShowTable.SERIES_KEY_IMDB_ID),
+                            extras.getString(ShowTable.SERIES_KEY_STATUS),
+                            extras.getInt(ShowTable.SERIES_KEY_EPISODES_SEEN));
+                    Log.d("code:", "Going to add show...");
+                    addShow(show);
+                }
+                break;
+            }
+        }
     }
 }
