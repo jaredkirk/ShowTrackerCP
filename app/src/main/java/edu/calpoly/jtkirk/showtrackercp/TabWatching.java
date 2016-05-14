@@ -40,6 +40,13 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("TabWatching", "TabWatching resumed");
+        getLoaderManager().restartLoader(4, null, this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_watching, container, false);
         //Must be called after the view is created to avoid null pointers.
@@ -72,28 +79,30 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
                         ShowTable.SERIES_KEY_IMDB_ID, ShowTable.SERIES_KEY_STATUS, ShowTable.SERIES_KEY_EPISODES_SEEN};
 
                 Uri uri2 = Uri.parse(ShowContentProvider.CONTENT_URI + "/filter/" + 4);
-                Log.d("uhoh", "ok");
 
                 return new android.support.v4.content.CursorLoader(getActivity(), uri2, projection2, null, null, null);
         }
-        Log.d("uhoh", "Invalid ID passed in: " + id);
+        Log.d("TabWatching", "Invalid ID passed in: " + id);
         return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         showCursorAdapter.swapCursor(data);
-        showCursorAdapter.setOnJokeChangeListener((MainActivity) getActivity());
-        showCursorAdapter.notifyDataSetChanged();
+        //showCursorAdapter.setOnJokeChangeListener((MainActivity) getActivity());
+        //showCursorAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        ((MainActivity)getActivity()).getShowCursorAdapter().swapCursor(null);
+        if(isAdded()) {
+            showListView.setAdapter(showCursorAdapter);
+            getLoaderManager().restartLoader(4, null, this);
+        }
     }
 
     public void fillData() {
-        //getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+
     }
 
     public void initLayout() {

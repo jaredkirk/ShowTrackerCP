@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -212,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         contentValues.put(ShowTable.SERIES_KEY_FIRST_AIRED, show.getFirstAired());
         contentValues.put(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
         contentValues.put(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
-        contentValues.put(ShowTable.SERIES_KEY_STATUS, show.getStatus());
+        contentValues.put(ShowTable.SERIES_KEY_STATUS, "Watching");
         contentValues.put(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
 
         Uri uriReturn = getContentResolver().insert(uri, contentValues);
@@ -300,37 +301,9 @@ public class MainActivity extends AppCompatActivity implements android.support.v
     }
 
     public void fillData() {
-        Log.d("fillData", "current item: " + viewPager.getCurrentItem());
-        pagerAdapter.notifyDataSetChanged();
 
-//        if(viewPager.getCurrentItem() == 0) {
-//            pagerAdapter.notifyDataSetChanged();
-//            //getSupportLoaderManager().restartLoader(0, null, (TabWatching)pagerAdapter.getItem(viewPager.getCurrentItem()));
-//        }
-//        else if(viewPager.getCurrentItem() == 1) {
-//            getSupportLoaderManager().restartLoader(0, null, (TabCompleted) pagerAdapter.getItem(viewPager.getCurrentItem()));
-//        }
-//        //showListView.setAdapter(showCursorAdapter);
     }
 
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
-//        switch (item.getItemId()) {
-//            case R.id.submenu_like:
-//                m_arrFilteredJokeList.clear();
-//                for(Joke j : m_arrJokeList) {
-//                    if(j.getRating() == Joke.LIKE) {
-//                        m_arrFilteredJokeList.add(j);
-//                    }
-//                }
-//                m_jokeAdapter.notifyDataSetChanged();
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
     public ShowCursorAdapter getShowCursorAdapter() {
         return showCursorAdapter;
     }

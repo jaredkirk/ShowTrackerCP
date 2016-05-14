@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -41,6 +42,7 @@ public class SearchForShowActivity extends AppCompatActivity {
     private ArrayList<Show> showList;
     protected ShowViewAdapter showViewAdapter;
     private ListView showListView;
+    private int selected_position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +83,9 @@ public class SearchForShowActivity extends AppCompatActivity {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 // Inflate a menu resource providing context menu items
-//                Log.d("menu", "menu inflater");
-//                MenuInflater inflater = mode.getMenuInflater();
-//                inflater.inflate(R.menu.actionmenu, menu);
-//                return true;
-                return false;
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.actionmenu, menu);
+                return true;
             }
 
             // Called each time the action mode is shown. Always called after onCreateActionMode, but
@@ -98,21 +98,12 @@ public class SearchForShowActivity extends AppCompatActivity {
             // Called when the user selects a contextual menu item
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.menu_remove:
-//                        for(int i = 0; i < m_arrJokeList.size(); i++) {
-//                            if(m_arrFilteredJokeList.get(positionToRemove).getJoke().equals(m_arrJokeList.get(i).getJoke())) {
-//                                m_arrJokeList.remove(i);
-//                            }
-//                        }
-//                        m_arrFilteredJokeList.remove(positionToRemove);
-//                        m_jokeAdapter.notifyDataSetChanged();
-//                        mode.finish(); // Action picked, so close the CAB
-//                        return true;
-//                    default:
-//                        return false;
-//                }
-                return false;
+                switch (item.getItemId()) {
+                    case R.id.menu_add:
+                        passShowBack(showList.get(selected_position));
+                    default:
+                        return false;
+                }
             }
 
             // Called when the user exits the action mode
@@ -122,10 +113,6 @@ public class SearchForShowActivity extends AppCompatActivity {
             }
         };
 
-        CharSequence text = "Long Press!";
-        int duration = Toast.LENGTH_SHORT;
-        final Toast toast = Toast.makeText(this, text, duration);
-
         showListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -133,11 +120,10 @@ public class SearchForShowActivity extends AppCompatActivity {
                 if (mActionMode != null) {
                     return false;
                 }
-                passShowBack(showList.get(position));
-                toast.show();
 
                 // Start the CAB using the ActionMode.Callback defined above
                 mActionMode = startSupportActionMode(mActionModeCallback);
+                selected_position = position;
                 view.setSelected(true);
                 return true;
             }

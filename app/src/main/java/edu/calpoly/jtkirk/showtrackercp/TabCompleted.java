@@ -79,7 +79,9 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        ((MainActivity)getActivity()).getShowCursorAdapter().swapCursor(null);
+        if(isAdded()) {
+            ((MainActivity) getActivity()).getShowCursorAdapter().swapCursor(null);
+        }
     }
 
     public void fillData() {
