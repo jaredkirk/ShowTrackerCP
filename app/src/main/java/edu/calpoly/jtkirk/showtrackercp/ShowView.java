@@ -33,9 +33,16 @@ public class ShowView extends LinearLayout  {
         nameOfShow.setText(name); //set the title
     }
 
-    //Sets the show
+    /**
+     * Update visual attributes to reflect to new show.
+     * @param show The show to update attributes for.
+     */
     public void setShow(Show show) {
         this.show = show;
+        this.name = show.getName();
+        nameOfShow.setText(name); //set the title
+        episodesSeen.setText(show.getEpisodesSeen());
+        notifyOnShowChangeListener();
     }
 
     //Set the show listener

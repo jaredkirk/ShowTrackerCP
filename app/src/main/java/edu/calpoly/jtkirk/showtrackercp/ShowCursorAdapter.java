@@ -2,6 +2,7 @@ package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 

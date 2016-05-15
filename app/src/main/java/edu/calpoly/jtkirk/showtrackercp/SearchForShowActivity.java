@@ -101,6 +101,7 @@ public class SearchForShowActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.menu_add:
                         passShowBack(showList.get(selected_position));
+                        mode.finish(); // Action picked, so close the CAB
                     default:
                         return false;
                 }

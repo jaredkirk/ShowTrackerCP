@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.view.ActionMode;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     protected ShowViewAdapter showViewAdapter;
     private ArrayList<Show> showList;
     private ShowCursorAdapter showCursorAdapter;
+    private int selected_position;
 
     private ActionMode.Callback mActionModeCallback;
     private ActionMode mActionMode;
@@ -34,7 +37,6 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initLayout();
         context = getContext();
 //        ((MainActivity)getActivity()).addShow(new Show(0, 0, "en", "Community", "", "", "", "", "", "Completed", 37));
     }
@@ -51,6 +53,7 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
         view = inflater.inflate(R.layout.tab_watching, container, false);
         //Must be called after the view is created to avoid null pointers.
         showListView = (ListView) view.findViewById(R.id.listViewGroupWatching);
+        initLayout();
 
         return view;
     }
@@ -65,7 +68,6 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
         LoaderManager loaderManagerWatching = getActivity().getSupportLoaderManager();
         loaderManagerWatching.initLoader(4, null, this);
 
-        fillData();
         showListView.setAdapter(showCursorAdapter);
     }
 
@@ -101,11 +103,16 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
         }
     }
 
-    public void fillData() {
-
-    }
-
     public void initLayout() {
-
+        showListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ((MainActivity)getActivity()).setSelectedPosition(position);
+                ((MainActivity)getActivity()).setSelectedShow(((ShowView) showListView.getChildAt(position)).getShow());
+                // Start the CAB using the ActionMode.Callback defined above
+                ((MainActivity)getActivity()).startSupportActionMode(((MainActivity) getActivity()).getMActionModeCallback());
+                return true;
+            }
+        });
     }
 }

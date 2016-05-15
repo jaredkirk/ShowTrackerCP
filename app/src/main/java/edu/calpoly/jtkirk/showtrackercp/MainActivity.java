@@ -7,6 +7,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +17,7 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +30,7 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+//TODO Change fragment numbers for querying from '4' and '3' to a variable.
 public class MainActivity extends AppCompatActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>,
         ShowView.OnShowChangeListener {
     private TextView listView;
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements android.support.v
     private ShowCursorAdapter showCursorAdapter;
     private PagerAdapter pagerAdapter;
     private ViewPager viewPager;
+    private int selected_position;
+    private Show selected_show;
 
     //For the database queries.
     private static final int COMPLETED_INT = 3;
@@ -101,11 +108,10 @@ public class MainActivity extends AppCompatActivity implements android.support.v
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 // Inflate a menu resource providing context menu items
-//                Log.d("menu", "menu inflater");
-//                MenuInflater inflater = mode.getMenuInflater();
-//                inflater.inflate(R.menu.actionmenu, menu);
-//                return true;
-                return false;
+                Log.d("menu", "menu inflater");
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.actionmenumain, menu);
+                return true;
             }
 
             // Called each time the action mode is shown. Always called after onCreateActionMode, but
@@ -118,21 +124,44 @@ public class MainActivity extends AppCompatActivity implements android.support.v
             // Called when the user selects a contextual menu item
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.menu_remove:
-//                        for(int i = 0; i < m_arrJokeList.size(); i++) {
-//                            if(m_arrFilteredJokeList.get(positionToRemove).getJoke().equals(m_arrJokeList.get(i).getJoke())) {
-//                                m_arrJokeList.remove(i);
-//                            }
-//                        }
-//                        m_arrFilteredJokeList.remove(positionToRemove);
-//                        m_jokeAdapter.notifyDataSetChanged();
-//                        mode.finish(); // Action picked, so close the CAB
-//                        return true;
-//                    default:
-//                        return false;
-//                }
-                return false;
+                switch (item.getItemId()) {
+                    case R.id.menu_edit:
+                        //TODO Create a new activity to show options for editing a show.
+                        switch(viewPager.getCurrentItem()) {
+                            case(0):
+
+                                break;
+                            case(1):
+                                break;
+                            case(2):
+                                break;
+                            default:
+                                break;
+                        }
+                        mode.finish(); // Action picked, so close the CAB
+                        return true;
+                    case R.id.menu_delete:
+                        switch(viewPager.getCurrentItem()) {
+                            case(0):
+                                deleteShow(selected_show);
+                                pagerAdapter.notifyDataSetChanged();
+                                break;
+                            case(1):
+//                                deleteShow(selected_show);
+//                                pagerAdapter.notifyDataSetChanged();
+                                break;
+                            case(2):
+//                                deleteShow(selected_show);
+//                                pagerAdapter.notifyDataSetChanged();
+                                break;
+                            default:
+                                break;
+                        }
+                        mode.finish(); // Action picked, so close the CAB
+                        return true;
+                    default:
+                        return false;
+                }
             }
 
             // Called when the user exits the action mode
@@ -141,15 +170,19 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                 mActionMode = null;
             }
         };
-
-        //Setup for a long press.
-        CharSequence text = "Long Press!";
-        int duration = Toast.LENGTH_SHORT;
-        final Toast toast = Toast.makeText(this, text, duration);
     }
 
     public void setListeners() {
 
+    }
+
+    /**
+     * Deletes a show from the database. Uses the content provider.
+     * @param show The show to delete.
+     */
+    public void deleteShow(Show show) {
+        Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
+        getContentResolver().delete(uri, null, null);
     }
 
     @Override
@@ -180,28 +213,27 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Return the string from the API call that corresponds to the element given.
-     */
-    public String getElementFromNode(Element element, String elementName) {
-        if(element.getElementsByTagName(elementName).item(0) != null) {
-            return element.getElementsByTagName(elementName).item(0).getTextContent();
-        }
-        return "";
-    }
-
-    public void addShowView(String showName) {
-        Show show = new Show(0, 0, "", showName, "", "", "", "", "", "", 0);
-        showList.add(show);
-        showViewAdapter.notifyDataSetChanged();
-    }
+//    /**
+//     * Return the string from the API call that corresponds to the element given.
+//     */
+//    public String getElementFromNode(Element element, String elementName) {
+//        if(element.getElementsByTagName(elementName).item(0) != null) {
+//            return element.getElementsByTagName(elementName).item(0).getTextContent();
+//        }
+//        return "";
+//    }
+//
+//    public void addShowView(String showName) {
+//        Show show = new Show(0, 0, "", showName, "", "", "", "", "", "", 0);
+//        showList.add(show);
+//        showViewAdapter.notifyDataSetChanged();
+//    }
 
     /**
      * Add a show to the database.
      * @param show Show to add.
      */
     protected void addShow(Show show) {
-        Log.d("show", "Adding show");
         Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
         ContentValues contentValues = new ContentValues();
 
@@ -281,7 +313,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
         ContentValues contentValues = new ContentValues();
 
-
         contentValues.put(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
         contentValues.put(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
         contentValues.put(ShowTable.SERIES_KEY_NAME, show.getName());
@@ -314,9 +345,8 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         switch(requestCode) {
             case (1) : {
                 if (resultCode == Activity.RESULT_OK) {
-                    //String newText = data.getStringExtra(PUBLIC_STATIC_STRING_IDENTIFIER);
                     // TODO Update your TextView.
-                    Log.d("test", "Returned from activity" + data.getStringExtra(ShowTable.SERIES_KEY_NAME));
+                    Log.d("test", "Returned from activity, got show " + data.getStringExtra(ShowTable.SERIES_KEY_NAME));
                     Bundle extras = data.getExtras();
                     Show show = new Show(
                             extras.getInt(ShowTable.SERIES_KEY_ID),
@@ -330,11 +360,34 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                             extras.getString(ShowTable.SERIES_KEY_IMDB_ID),
                             extras.getString(ShowTable.SERIES_KEY_STATUS),
                             extras.getInt(ShowTable.SERIES_KEY_EPISODES_SEEN));
-                    Log.d("code:", "Going to add show...");
                     addShow(show);
                 }
                 break;
             }
         }
+    }
+
+    /**
+     * Set the selected position of a show from a fragment. Each fragment is different.
+     * @param position The position to set.
+     */
+    public void setSelectedPosition(int position) {
+        selected_position = position;
+    }
+
+    /**
+     * Set the selected show from a fragment, to get information for the edit/delete menu.
+     * @param show The show to set information for.
+     */
+    public void setSelectedShow(Show show) {
+        selected_show = show;
+    }
+
+    /**
+     * Return the mActionModeCallback to open up the menu from one of the tab fragments.
+     * @return mActionModeCallback
+     */
+    public android.support.v7.view.ActionMode.Callback getMActionModeCallback() {
+        return mActionModeCallback;
     }
 }
