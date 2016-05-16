@@ -41,7 +41,7 @@ public class ShowView extends LinearLayout  {
         this.show = show;
         this.name = show.getName();
         nameOfShow.setText(name); //set the title
-        episodesSeen.setText(show.getEpisodesSeen());
+        episodesSeen.setText(show.getEpisodesSeen() + "");
         notifyOnShowChangeListener();
     }
 

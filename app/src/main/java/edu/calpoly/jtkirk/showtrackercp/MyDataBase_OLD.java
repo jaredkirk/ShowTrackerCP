@@ -27,7 +27,6 @@ public class MyDataBase_OLD {
     public void insertSeries(SQLiteDatabase db, int seriesId, String series_language, String series_name,
                              String banner, String overview, String first_aired, String network, int imdb_id,
                              int id) {
-        //TODO Remove quotes in overview or series name.
         db.execSQL("INSERT INTO series VALUES(" + seriesId + ", '" + series_language
                 + "', '"+ series_name + "', '" + banner + "', '" + overview + "', '"
                 + first_aired + "', '" + network + "', '" + imdb_id + "', "+ id + ");");

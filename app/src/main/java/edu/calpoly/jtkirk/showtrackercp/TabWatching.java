@@ -46,6 +46,8 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
         super.onResume();
         Log.d("TabWatching", "TabWatching resumed");
         getLoaderManager().restartLoader(4, null, this);
+        showListView.setAdapter(showCursorAdapter);
+
     }
 
     @Override
@@ -73,6 +75,8 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d("tabwatching", "createloader");
+
         switch(id) {
             case(4):
                 String[] projection2 = {ShowTable.SERIES_KEY_ID, ShowTable.SERIES_KEY_TVDB_ID,
@@ -90,16 +94,18 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d("tabwatching", "swapcursor");
         showCursorAdapter.swapCursor(data);
-        //showCursorAdapter.setOnJokeChangeListener((MainActivity) getActivity());
+        //showCursorAdapter.setOnShowChangeListener((MainActivity) getActivity());
         //showCursorAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         if(isAdded()) {
-            showListView.setAdapter(showCursorAdapter);
+            showCursorAdapter.swapCursor(null);
             getLoaderManager().restartLoader(4, null, this);
+            showListView.setAdapter(showCursorAdapter);
         }
     }
 
@@ -108,7 +114,10 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ((MainActivity)getActivity()).setSelectedPosition(position);
+                //TODO Bug, cannot long click most recently added show.
                 ((MainActivity)getActivity()).setSelectedShow(((ShowView) showListView.getChildAt(position)).getShow());
+                ((MainActivity)getActivity()).setSelectedShowView(((ShowView) showListView.getChildAt(position)));
+
                 // Start the CAB using the ActionMode.Callback defined above
                 ((MainActivity)getActivity()).startSupportActionMode(((MainActivity) getActivity()).getMActionModeCallback());
                 return true;

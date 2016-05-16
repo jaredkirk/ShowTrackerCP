@@ -44,8 +44,13 @@ public class ShowCursorAdapter extends android.support.v4.widget.CursorAdapter {
         return view;
     }
 
+    //TODO bindView is getting old views from when the app started, every time something is updated.
+    //Could be not clearing a list of data from somewhere.
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+        if(view != null && ((ShowView)view).getShow() != null) {
+            Log.d("bindview", "bind view: " + ((ShowView) view).getShow().getEpisodesSeen());
+        }
         //Extract the Show from the cursor.
         int id = cursor.getInt(ShowTable.SERIES_COL_ID);
         int tvdbID = cursor.getInt(ShowTable.SERIES_COL_TVDB_ID);
@@ -69,7 +74,7 @@ public class ShowCursorAdapter extends android.support.v4.widget.CursorAdapter {
     /**
      * Mutator method for changing the OnShowChangeListener.
      */
-    public void setOnJokeChangeListener(ShowView.OnShowChangeListener showListener) {
+    public void setOnShowChangeListener(ShowView.OnShowChangeListener showListener) {
         this.showListener = showListener;
     }
 }

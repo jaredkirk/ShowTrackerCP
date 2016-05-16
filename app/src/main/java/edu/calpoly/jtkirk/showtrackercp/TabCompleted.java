@@ -56,7 +56,6 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d("loader", "oncreateloader tab completed: " + id);
         switch(id) {
             case(3):
                 String[] projection2 = {ShowTable.SERIES_KEY_ID, ShowTable.SERIES_KEY_TVDB_ID,
@@ -74,7 +73,7 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         showCursorAdapter.swapCursor(data);
-        showCursorAdapter.setOnJokeChangeListener((MainActivity) getActivity());
+        showCursorAdapter.setOnShowChangeListener((MainActivity) getActivity());
     }
 
     @Override

@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,16 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 //TODO Change fragment numbers for querying from '4' and '3' to a variable.
 public class MainActivity extends AppCompatActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>,
@@ -45,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
     private ViewPager viewPager;
     private int selected_position;
     private Show selected_show;
+    private ShowView selected_show_view;
 
     //For the database queries.
     private static final int COMPLETED_INT = 3;
@@ -159,6 +152,11 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                         }
                         mode.finish(); // Action picked, so close the CAB
                         return true;
+                    //TODO Create a tab_watching action menu to have this option, so the other tabs don't.
+                    case R.id.plus_one:
+                        plusOne(selected_show);
+                        mode.finish();
+                        return true;
                     default:
                         return false;
                 }
@@ -177,12 +175,56 @@ public class MainActivity extends AppCompatActivity implements android.support.v
     }
 
     /**
+     * Add a +1 to the number of episodes seen.
+     * @param show The show to increase the episode count for.
+     */
+    public void plusOne(final Show show) {
+        show.setEpisodesSeen(show.getEpisodesSeen() + 1);
+
+        onShowChanged(selected_show_view, show);
+
+        final View parentView = findViewById(R.id.toolbar);
+        Snackbar snackbar = Snackbar
+                .make(parentView, "+1 to episode count", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar snackbar1 = Snackbar.make(parentView, "Undo +1 complete!", Snackbar.LENGTH_SHORT);
+
+                        show.setEpisodesSeen(show.getEpisodesSeen() - 1);
+                        onShowChanged(selected_show_view, show);
+
+                        snackbar1.show();
+                    }
+                });
+
+        snackbar.show();
+    }
+
+    /**
      * Deletes a show from the database. Uses the content provider.
      * @param show The show to delete.
      */
-    public void deleteShow(Show show) {
-        Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
+    public void deleteShow(final Show show) {
+        final Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
         getContentResolver().delete(uri, null, null);
+
+        final View parentView = findViewById(R.id.toolbar);
+        Snackbar snackbar = Snackbar
+                .make(parentView, "Deleted show", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar snackbar1 = Snackbar.make(parentView, "Show restored!", Snackbar.LENGTH_SHORT);
+
+                        addShow(show);
+                        onShowChanged(selected_show_view, show);
+
+                        snackbar1.show();
+                    }
+                });
+
+        snackbar.show();
     }
 
     @Override
@@ -246,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         contentValues.put(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
         contentValues.put(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
         contentValues.put(ShowTable.SERIES_KEY_STATUS, "Watching");
+        //TODO change from "Watching" to getStatus() and pass in watching if it's new.
         contentValues.put(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
 
         Uri uriReturn = getContentResolver().insert(uri, contentValues);
@@ -299,8 +342,9 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d("mainactivity", "swapcursor");
         showCursorAdapter.swapCursor(data);
-        showCursorAdapter.setOnJokeChangeListener(this);
+        showCursorAdapter.setOnShowChangeListener(this);
     }
 
     @Override
@@ -326,8 +370,8 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
         getContentResolver().update(uri, contentValues, null, null);
 
-        showCursorAdapter.setOnJokeChangeListener(null);
-
+        //showCursorAdapter.setOnShowChangeListener(null);
+        pagerAdapter.notifyDataSetChanged();
         //fillData();
     }
 
@@ -381,6 +425,10 @@ public class MainActivity extends AppCompatActivity implements android.support.v
      */
     public void setSelectedShow(Show show) {
         selected_show = show;
+    }
+
+    public void setSelectedShowView(ShowView showView) {
+        selected_show_view = showView;
     }
 
     /**
