@@ -29,10 +29,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.calpoly.jtkirk.showtrackercp.MainActivity" />
         </activity>
+
         <provider
-            android:name="edu.calpoly.jtkirk.showtrackercp.ShowContentProvider"
-            android:authorities="edu.calpoly.jtkirk.showtrackercp.contentprovider">
-        </provider>
+            android:name=".ShowContentProvider"
+            android:authorities="edu.calpoly.jtkirk.showtrackercp.contentprovider"></provider>
+
+        <activity
+            android:name=".ExtendedShowView"
+            android:label="@string/title_activity_extended_show_view"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

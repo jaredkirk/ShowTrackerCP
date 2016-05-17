@@ -255,22 +255,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         return super.onOptionsItemSelected(item);
     }
 
-//    /**
-//     * Return the string from the API call that corresponds to the element given.
-//     */
-//    public String getElementFromNode(Element element, String elementName) {
-//        if(element.getElementsByTagName(elementName).item(0) != null) {
-//            return element.getElementsByTagName(elementName).item(0).getTextContent();
-//        }
-//        return "";
-//    }
-//
-//    public void addShowView(String showName) {
-//        Show show = new Show(0, 0, "", showName, "", "", "", "", "", "", 0);
-//        showList.add(show);
-//        showViewAdapter.notifyDataSetChanged();
-//    }
-
     /**
      * Add a show to the database.
      * @param show Show to add.
@@ -388,8 +372,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case (1) : {
-                if (resultCode == Activity.RESULT_OK) {
-                    // TODO Update your TextView.
+                if(resultCode == Activity.RESULT_OK) {
                     Log.d("test", "Returned from activity, got show " + data.getStringExtra(ShowTable.SERIES_KEY_NAME));
                     Bundle extras = data.getExtras();
                     Show show = new Show(
@@ -407,6 +390,11 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                     addShow(show);
                 }
                 break;
+            }
+            case (2) : {
+                if(resultCode == Activity.RESULT_OK) {
+                    Log.d("test", "Returned from extended view activity");
+                }
             }
         }
     }

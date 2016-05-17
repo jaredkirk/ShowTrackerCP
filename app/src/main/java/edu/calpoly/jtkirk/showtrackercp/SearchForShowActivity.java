@@ -47,6 +47,7 @@ public class SearchForShowActivity extends AppCompatActivity {
         Log.d("Search", "Started the Search Acvitity");
         setContentView(R.layout.activity_search_for_show);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Search");
         setSupportActionBar(toolbar);
 
         searchShowEditText = new EditText(this);
@@ -288,7 +289,6 @@ public class SearchForShowActivity extends AppCompatActivity {
      * @param show The show to send back.
      */
     public void passShowBack(Show show) {
-        Log.d("passback", "Show passing back: " + show.getName());
         Intent resultIntent = new Intent();
 
         //Pass back the show's values to MainActivity to put in the database.

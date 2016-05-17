@@ -8,4 +8,5 @@
     <string name="completed">Completed</string>
     <string name="watching">Watching</string>
     <string name="to_watch">To Watch</string>
+    <string name="title_activity_extended_show_view">ExtendedShowView</string>
 </resources>

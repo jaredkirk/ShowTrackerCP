@@ -1,6 +1,7 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -121,6 +123,31 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
                 // Start the CAB using the ActionMode.Callback defined above
                 ((MainActivity)getActivity()).startSupportActionMode(((MainActivity) getActivity()).getMActionModeCallback());
                 return true;
+            }
+        });
+
+        showListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                Show show = (((ShowView) showListView.getChildAt(position)).getShow());
+
+                Intent myIntent = new Intent(getActivity(), ExtendedShowView.class);
+
+                myIntent.putExtra(ShowTable.SERIES_KEY_ID, show.getId());
+                myIntent.putExtra(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
+                myIntent.putExtra(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
+                myIntent.putExtra(ShowTable.SERIES_KEY_NAME, show.getName());
+                myIntent.putExtra(ShowTable.SERIES_KEY_BANNER, show.getBanner());
+                myIntent.putExtra(ShowTable.SERIES_KEY_OVERVIEW, show.getOverview());
+                myIntent.putExtra(ShowTable.SERIES_KEY_FIRST_AIRED, show.getFirstAired());
+                myIntent.putExtra(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
+                myIntent.putExtra(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
+                myIntent.putExtra(ShowTable.SERIES_KEY_STATUS, show.getStatus());
+                myIntent.putExtra(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
+
+                startActivityForResult(myIntent, 2);
             }
         });
     }
