@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                         return true;
                     //TODO Create a tab_watching action menu to have this option, so the other tabs don't.
                     case R.id.plus_one:
+                        Log.d("plusone", "plusone: selected show: " + selected_show.getName());
                         plusOne(selected_show);
                         mode.finish();
                         return true;

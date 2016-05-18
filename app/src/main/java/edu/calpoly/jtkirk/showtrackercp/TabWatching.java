@@ -77,8 +77,6 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d("tabwatching", "createloader");
-
         switch(id) {
             case(4):
                 String[] projection2 = {ShowTable.SERIES_KEY_ID, ShowTable.SERIES_KEY_TVDB_ID,
@@ -90,7 +88,6 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
 
                 return new android.support.v4.content.CursorLoader(getActivity(), uri2, projection2, null, null, null);
         }
-        Log.d("TabWatching", "Invalid ID passed in: " + id);
         return null;
     }
 
@@ -116,9 +113,8 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ((MainActivity)getActivity()).setSelectedPosition(position);
-                //TODO Bug, cannot long click most recently added show.
-                ((MainActivity)getActivity()).setSelectedShow(((ShowView) showListView.getChildAt(position)).getShow());
-                ((MainActivity)getActivity()).setSelectedShowView(((ShowView) showListView.getChildAt(position)));
+                ((MainActivity)getActivity()).setSelectedShow(((ShowView) getViewByPosition(position, showListView)).getShow());
+                ((MainActivity)getActivity()).setSelectedShowView((ShowView) getViewByPosition(position, showListView));
 
                 // Start the CAB using the ActionMode.Callback defined above
                 ((MainActivity)getActivity()).startSupportActionMode(((MainActivity) getActivity()).getMActionModeCallback());
@@ -131,7 +127,7 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
 
-                Show show = (((ShowView) showListView.getChildAt(position)).getShow());
+                Show show = (((ShowView) getViewByPosition(position, showListView)).getShow());
 
                 Intent myIntent = new Intent(getActivity(), ExtendedShowView.class);
 
@@ -151,4 +147,18 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
             }
         });
     }
+
+    //Source: http://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
+    }
+
 }

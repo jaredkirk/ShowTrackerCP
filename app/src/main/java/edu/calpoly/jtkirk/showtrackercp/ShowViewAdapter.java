@@ -12,7 +12,6 @@ import java.util.List;
  * Created by jaredkirk on 4/19/16.
  */
 public class ShowViewAdapter extends BaseAdapter {
-    /** The application Context in which this JokeListAdapter is being used. */
     private Context m_context;
 
     /** The data set to which this Show is bound. */
@@ -37,6 +36,8 @@ public class ShowViewAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d("view", "getview:"+position+" "+convertView);
+
         ShowView view;
         if(convertView != null) {
             view = (ShowView)convertView;
@@ -44,7 +45,6 @@ public class ShowViewAdapter extends BaseAdapter {
         else {
             view = new ShowView(m_context, (Show)getItem(position));
         }
-        //view.setJoke((Joke) getItem(position));
         return new ShowView(m_context, (Show)getItem(position));
     }
 }

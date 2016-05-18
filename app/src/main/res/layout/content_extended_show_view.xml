@@ -17,9 +17,7 @@
         android:layout_height="match_parent">
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="0,1"
-            android:layout_weight="10">
+            android:layout_height="wrap_content">
             <TableRow>
                 <TextView
                     android:id="@+id/extended_series_name"
@@ -28,7 +26,7 @@
                     android:paddingLeft="10dp"
                     android:gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="No Series Title..."
+                    android:text="@string/extended_series_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textAlignment="center" />
@@ -42,12 +40,15 @@
                     android:paddingLeft="10dp"
                     android:gravity="center_vertical"
                     android:layout_weight="1"
-                    android:text="No overview found!"
+                    android:text="@string/extended_overview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textAlignment="center" />
             </TableRow>
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -55,12 +56,13 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:layout_weight="1">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="Episodes seen: "/>
+                        android:text="@string/extended_episodes_seen"/>
                     <TextView
                         android:id="@+id/extended_episodes_seen"
                         android:layout_width="match_parent"
@@ -74,21 +76,86 @@
                 <RelativeLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="First Aired: "/>
+                        android:text="@string/extended_first_aired"/>
                     <TextView
                         android:id="@+id/extended_first_aired"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0-0-0"/>
+                        android:gravity="right"
+                        android:text="Unknown"/>
                 </RelativeLayout>
             </TableRow>
 
+            <TableRow>
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Language: "/>
+                    <TextView
+                        android:id="@+id/extended_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/extended_language"/>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow>
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Network: "/>
+                    <TextView
+                        android:id="@+id/extended_network"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/extended_network"/>
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow>
+                <RelativeLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Status: "/>
+                    <TextView
+                        android:id="@+id/extended_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/extended_status"/>
+                </RelativeLayout>
+            </TableRow>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000" />
         </TableLayout>
     </ScrollView>
 </RelativeLayout>

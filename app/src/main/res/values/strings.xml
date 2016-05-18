@@ -9,4 +9,11 @@
     <string name="watching">Watching</string>
     <string name="to_watch">To Watch</string>
     <string name="title_activity_extended_show_view">ExtendedShowView</string>
+    <string name="extended_series_name">No Series Title...</string>
+    <string name="extended_overview">No overview found!</string>
+    <string name="extended_episodes_seen">Episodes seen:</string>
+    <string name="extended_first_aired">First Aired:</string>
+    <string name="extended_language">No language information found</string>
+    <string name="extended_network">No network information found</string>
+    <string name="extended_status">You haven\'t added this show yet!</string>
 </resources>

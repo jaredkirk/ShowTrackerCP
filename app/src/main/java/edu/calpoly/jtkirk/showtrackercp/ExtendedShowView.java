@@ -11,7 +11,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 public class ExtendedShowView extends AppCompatActivity {
+    TextView seriesName;
+    TextView overview;
+    TextView episodesSeen;
+    TextView firstAired;
+    TextView language;
+    TextView network;
+    TextView status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,25 +31,51 @@ public class ExtendedShowView extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
 
-        /**
-         * Set all the text views.
-         */
-        TextView seriesName = (TextView) findViewById(R.id.extended_series_name);
-        seriesName.setText(extras.getString(ShowTable.SERIES_KEY_NAME));
+        initializeText(intent.getExtras());
+    }
 
-        TextView overview = (TextView) findViewById(R.id.extended_overview);
-        overview.setText(extras.getString(ShowTable.SERIES_KEY_OVERVIEW));
+    /**
+     * Initialze the text to display show information.
+     * @param extras The bundle containing the show information.
+     */
+    public void initializeText(Bundle extras) {
+        seriesName = (TextView) findViewById(R.id.extended_series_name);
 
-        TextView episodesSeen = (TextView) findViewById(R.id.extended_episodes_seen);
+        String name = extras.getString(ShowTable.SERIES_KEY_NAME);
+        if(!name.equals("")) {
+            seriesName.setText(name);
+        }
+
+        String showOverview = extras.getString(ShowTable.SERIES_KEY_OVERVIEW);
+        overview = (TextView) findViewById(R.id.extended_overview);
+        if(!showOverview.equals("") && overview != null) {
+            overview.setText(showOverview);
+        }
+
+        episodesSeen = (TextView) findViewById(R.id.extended_episodes_seen);
         episodesSeen.setText(extras.getInt(ShowTable.SERIES_KEY_EPISODES_SEEN) + "");
 
-        TextView firstAired = (TextView) findViewById(R.id.extended_first_aired);
-        firstAired.setText(extras.getString(ShowTable.SERIES_KEY_FIRST_AIRED));
+        String showFirstAired = extras.getString(ShowTable.SERIES_KEY_FIRST_AIRED);
+        firstAired = (TextView) findViewById(R.id.extended_first_aired);
+        if(!showFirstAired.equals("") && firstAired != null) {
+            firstAired.setText(showFirstAired);
+        }
 
-        Log.d("test", extras.getString(ShowTable.SERIES_KEY_FIRST_AIRED) + "");
+        String showLanguage = extras.getString(ShowTable.SERIES_KEY_LANGUAGE);
+        language = (TextView) findViewById(R.id.extended_language);
+        if(!showLanguage.equals("") && language != null) {
+            language.setText(showLanguage);
+        }
 
+        String showNetwork = extras.getString(ShowTable.SERIES_KEY_NETWORK);
+        network = (TextView) findViewById(R.id.extended_network);
+        if(!showNetwork.equals("") && network != null) {
+            network.setText(showNetwork);
+        }
+
+        status = (TextView) findViewById(R.id.extended_status);
+        status.setText(extras.getString(ShowTable.SERIES_KEY_STATUS));
     }
 
 }
