@@ -191,6 +191,7 @@ public class ShowContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
+        Log.d("update", "Updating show...");
         SQLiteDatabase sqlDB = this.database.getWritableDatabase();
         int numRowsUpdated = 0;
 

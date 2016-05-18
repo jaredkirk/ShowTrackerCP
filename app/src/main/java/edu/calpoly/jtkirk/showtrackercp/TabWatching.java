@@ -46,7 +46,6 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("TabWatching", "TabWatching resumed");
         getLoaderManager().restartLoader(4, null, this);
         showListView.setAdapter(showCursorAdapter);
 
@@ -93,7 +92,6 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("tabwatching", "swapcursor");
         showCursorAdapter.swapCursor(data);
         //showCursorAdapter.setOnShowChangeListener((MainActivity) getActivity());
         //showCursorAdapter.notifyDataSetChanged();

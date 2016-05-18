@@ -142,13 +142,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="Status: "/>
-                    <TextView
-                        android:id="@+id/extended_status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:text="Status: "
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+                    <Spinner
+                        android:id="@+id/status_spinner"
+                        android:layout_width="125dp"
+                        android:layout_height="50dp"
                         android:gravity="right"
-                        android:text="@string/extended_status"/>
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
                 </RelativeLayout>
             </TableRow>
 

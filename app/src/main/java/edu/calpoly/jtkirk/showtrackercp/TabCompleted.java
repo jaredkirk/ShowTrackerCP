@@ -1,5 +1,6 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -32,10 +34,18 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getLoaderManager().restartLoader(3, null, this);
+        showListView.setAdapter(showCursorAdapter);
+
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tab_watching, container, false);
         //Must be called after the view is created to avoid null pointers.
         showListView = (ListView) view.findViewById(R.id.listViewGroupWatching);
+        initLayout();
 
         return view;
     }
@@ -50,7 +60,6 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
         LoaderManager loaderManagerWatching = getActivity().getSupportLoaderManager();
         loaderManagerWatching.initLoader(3, null, this);
 
-        fillData();
         showListView.setAdapter(showCursorAdapter);
     }
 
@@ -73,18 +82,67 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         showCursorAdapter.swapCursor(data);
-        showCursorAdapter.setOnShowChangeListener((MainActivity) getActivity());
+        //showCursorAdapter.setOnShowChangeListener((MainActivity) getActivity());
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         if(isAdded()) {
-            ((MainActivity) getActivity()).getShowCursorAdapter().swapCursor(null);
+            showCursorAdapter.swapCursor(null);
+            getLoaderManager().restartLoader(3, null, this);
+            showListView.setAdapter(showCursorAdapter);
         }
     }
+    public void initLayout() {
+        showListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ((MainActivity)getActivity()).setSelectedPosition(position);
+                ((MainActivity)getActivity()).setSelectedShow(((ShowView) getViewByPosition(position, showListView)).getShow());
+                ((MainActivity)getActivity()).setSelectedShowView((ShowView) getViewByPosition(position, showListView));
 
-    public void fillData() {
-        //getActivity().getSupportLoaderManager().restartLoader(0, null, this);
-        //TODO maybe try filling the data from a different area? Not sure if changes will update...
+                // Start the CAB using the ActionMode.Callback defined above
+                ((MainActivity)getActivity()).startSupportActionMode(((MainActivity) getActivity()).getMActionModeCallback());
+                return true;
+            }
+        });
+
+        showListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                Show show = (((ShowView) getViewByPosition(position, showListView)).getShow());
+
+                Intent myIntent = new Intent(getActivity(), ExtendedShowView.class);
+
+                myIntent.putExtra(ShowTable.SERIES_KEY_ID, show.getId());
+                myIntent.putExtra(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
+                myIntent.putExtra(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
+                myIntent.putExtra(ShowTable.SERIES_KEY_NAME, show.getName());
+                myIntent.putExtra(ShowTable.SERIES_KEY_BANNER, show.getBanner());
+                myIntent.putExtra(ShowTable.SERIES_KEY_OVERVIEW, show.getOverview());
+                myIntent.putExtra(ShowTable.SERIES_KEY_FIRST_AIRED, show.getFirstAired());
+                myIntent.putExtra(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
+                myIntent.putExtra(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
+                myIntent.putExtra(ShowTable.SERIES_KEY_STATUS, show.getStatus());
+                myIntent.putExtra(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
+
+                startActivityForResult(myIntent, 2);
+            }
+        });
+    }
+
+    //Source: http://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 }

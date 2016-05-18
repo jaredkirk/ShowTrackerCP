@@ -16,4 +16,10 @@
     <string name="extended_language">No language information found</string>
     <string name="extended_network">No network information found</string>
     <string name="extended_status">You haven\'t added this show yet!</string>
+    <string name="edit">Edit</string>
+    <string-array name="status_array">
+        <item>Watching</item>
+        <item>Completed</item>
+        <item>To Watch</item>
+    </string-array>
 </resources>
