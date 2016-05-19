@@ -36,6 +36,7 @@ public class GetArtwork extends AsyncTask {
     }
 
     protected Object doInBackground(Object[] params) {
+        Log.d("async", "async artwork task in progress...");
         int id = (int)params[0];
         try {
             HttpTools http = new HttpTools(new DefaultHttpClient());
@@ -46,11 +47,9 @@ public class GetArtwork extends AsyncTask {
                 ArrayList<Artwork> artwork = (ArrayList)art.getResults();
 
                 if(artwork != null && artwork.size() > 0) {
-                    Log.d("test", "Artwork: " + artwork.get(0).getFilePath());
                     imagePath = artwork.get(0).getFilePath();
                 }
             } catch (MovieDbException e) {
-                Log.d("uhoh", "movie exception");
                 e.printStackTrace();
             }
         }

@@ -84,7 +84,7 @@ public class ExtendedShowView extends AppCompatActivity {
      * @param extras The bundle containing the show information.
      */
     public void initializeText(Bundle extras) {
-        showID = extras.getInt(ShowTable.SERIES_KEY_TVDB_ID);
+        showID = extras.getInt(ShowTable.SERIES_KEY_ID);
         status = extras.getString(ShowTable.SERIES_KEY_STATUS);
 
         seriesName = (TextView) findViewById(R.id.extended_series_name);
@@ -183,7 +183,6 @@ public class ExtendedShowView extends AppCompatActivity {
 
     public void initializeImage() {
         GetArtwork getArtwork = new GetArtwork();
-        Log.d("artwork", "show id of " + showID);
         getArtwork.execute(showID);
         try {
             getArtwork.get();

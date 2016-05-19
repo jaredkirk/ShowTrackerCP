@@ -43,7 +43,6 @@ public class ShowView extends LinearLayout  {
 
     public void initializeImage() {
         GetArtwork getArtwork = new GetArtwork();
-        Log.d("artwork", "show id of " + show.getTvdbID());
         getArtwork.execute(show.getTvdbID());
         try {
             getArtwork.get();
@@ -63,7 +62,7 @@ public class ShowView extends LinearLayout  {
     public void setShow(Show show) {
         this.show = show;
         this.name = show.getName();
-        initializeImage();
+        //initializeImage();
         nameOfShow.setText(name); //set the title
         episodesSeen.setText(show.getEpisodesSeen() + "");
         notifyOnShowChangeListener();

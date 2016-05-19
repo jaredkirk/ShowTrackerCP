@@ -30,13 +30,12 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        ((MainActivity)getActivity()).addShow(new Show(0, 0, "en", "Community", "", "", "", "", "", "Completed", 37));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(3, null, this);
+        getLoaderManager().restartLoader(ShowContentProvider.SHOW_COMPLETED, null, this);
         showListView.setAdapter(showCursorAdapter);
 
     }
@@ -58,7 +57,7 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
         showCursorAdapter = new ShowCursorAdapter(getContext(), null, 0);
 
         LoaderManager loaderManagerWatching = getActivity().getSupportLoaderManager();
-        loaderManagerWatching.initLoader(3, null, this);
+        loaderManagerWatching.initLoader(ShowContentProvider.SHOW_COMPLETED, null, this);
 
         showListView.setAdapter(showCursorAdapter);
     }
@@ -66,13 +65,13 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch(id) {
-            case(3):
+            case(ShowContentProvider.SHOW_COMPLETED):
                 String[] projection2 = {ShowTable.SERIES_KEY_ID, ShowTable.SERIES_KEY_TVDB_ID,
                         ShowTable.SERIES_KEY_LANGUAGE, ShowTable.SERIES_KEY_NAME, ShowTable.SERIES_KEY_BANNER,
                         ShowTable.SERIES_KEY_OVERVIEW, ShowTable.SERIES_KEY_FIRST_AIRED, ShowTable.SERIES_KEY_NETWORK,
                         ShowTable.SERIES_KEY_IMDB_ID, ShowTable.SERIES_KEY_STATUS, ShowTable.SERIES_KEY_EPISODES_SEEN};
 
-                Uri uri2 = Uri.parse(ShowContentProvider.CONTENT_URI + "/filter/" + 3);
+                Uri uri2 = Uri.parse(ShowContentProvider.CONTENT_URI + "/filter/" + ShowContentProvider.SHOW_COMPLETED);
 
                 return new android.support.v4.content.CursorLoader(getActivity(), uri2, projection2, null, null, null);
         }
@@ -89,7 +88,7 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
     public void onLoaderReset(Loader<Cursor> loader) {
         if(isAdded()) {
             showCursorAdapter.swapCursor(null);
-            getLoaderManager().restartLoader(3, null, this);
+            getLoaderManager().restartLoader(ShowContentProvider.SHOW_COMPLETED, null, this);
             showListView.setAdapter(showCursorAdapter);
         }
     }

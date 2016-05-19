@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-//TODO Change fragment numbers for querying from '4' and '3' to a variable.
 public class MainActivity extends AppCompatActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>,
         ShowView.OnShowChangeListener {
     private TextView listView;
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 // Inflate a menu resource providing context menu items
-                Log.d("menu", "menu inflater");
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.actionmenumain, menu);
                 return true;
@@ -154,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                         return true;
                     //TODO Create a tab_watching action menu to have this option, so the other tabs don't.
                     case R.id.plus_one:
-                        Log.d("plusone", "plusone: selected show: " + selected_show.getName());
                         plusOne(selected_show);
                         mode.finish();
                         return true;
@@ -327,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("mainactivity", "swapcursor");
         showCursorAdapter.swapCursor(data);
         showCursorAdapter.setOnShowChangeListener(this);
     }
@@ -378,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                     Bundle extras = data.getExtras();
                     Show show = new Show(
                             extras.getInt(ShowTable.SERIES_KEY_ID),
-                            extras.getInt(ShowTable.SERIES_KEY_TVDB_ID),
+                            extras.getInt(ShowTable.SERIES_KEY_TVDB_ID),//maybe here
                             extras.getString(ShowTable.SERIES_KEY_LANGUAGE),
                             extras.getString(ShowTable.SERIES_KEY_NAME),
                             extras.getString(ShowTable.SERIES_KEY_BANNER),

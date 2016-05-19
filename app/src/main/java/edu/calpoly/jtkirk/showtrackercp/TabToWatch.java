@@ -37,13 +37,12 @@ public class TabToWatch extends Fragment implements android.support.v4.app.Loade
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
-//        ((MainActivity)getActivity()).addShow(new Show(0, 0, "en", "Community", "", "", "", "", "", "Completed", 37));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(5, null, this);
+        getLoaderManager().restartLoader(ShowContentProvider.SHOW_TO_WATCH, null, this);
         showListView.setAdapter(showCursorAdapter);
 
     }
@@ -66,7 +65,7 @@ public class TabToWatch extends Fragment implements android.support.v4.app.Loade
         showCursorAdapter = new ShowCursorAdapter(getContext(), null, 0);
 
         LoaderManager loaderManagerWatching = getActivity().getSupportLoaderManager();
-        loaderManagerWatching.initLoader(5, null, this);
+        loaderManagerWatching.initLoader(ShowContentProvider.SHOW_TO_WATCH, null, this);
 
         showListView.setAdapter(showCursorAdapter);
     }
@@ -74,13 +73,13 @@ public class TabToWatch extends Fragment implements android.support.v4.app.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch(id) {
-            case(5):
+            case(ShowContentProvider.SHOW_TO_WATCH):
                 String[] projection2 = {ShowTable.SERIES_KEY_ID, ShowTable.SERIES_KEY_TVDB_ID,
                         ShowTable.SERIES_KEY_LANGUAGE, ShowTable.SERIES_KEY_NAME, ShowTable.SERIES_KEY_BANNER,
                         ShowTable.SERIES_KEY_OVERVIEW, ShowTable.SERIES_KEY_FIRST_AIRED, ShowTable.SERIES_KEY_NETWORK,
                         ShowTable.SERIES_KEY_IMDB_ID, ShowTable.SERIES_KEY_STATUS, ShowTable.SERIES_KEY_EPISODES_SEEN};
 
-                Uri uri2 = Uri.parse(ShowContentProvider.CONTENT_URI + "/filter/" + 5);
+                Uri uri2 = Uri.parse(ShowContentProvider.CONTENT_URI + "/filter/" + ShowContentProvider.SHOW_TO_WATCH);
 
                 return new android.support.v4.content.CursorLoader(getActivity(), uri2, projection2, null, null, null);
         }
@@ -98,7 +97,7 @@ public class TabToWatch extends Fragment implements android.support.v4.app.Loade
     public void onLoaderReset(Loader<Cursor> loader) {
         if(isAdded()) {
             showCursorAdapter.swapCursor(null);
-            getLoaderManager().restartLoader(5, null, this);
+            getLoaderManager().restartLoader(ShowContentProvider.SHOW_TO_WATCH, null, this);
             showListView.setAdapter(showCursorAdapter);
         }
     }

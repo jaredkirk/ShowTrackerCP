@@ -30,9 +30,9 @@ public class ShowContentProvider extends ContentProvider {
     /** Values for the URIMatcher. */
     private static final int SHOW_ID = 1;
     private static final int SHOW_FILTER = 2;
-    private static final int SHOW_COMPLETED = 3;
-    private static final int SHOW_WATCHING = 4;
-    private static final int SHOW_TO_WATCH = 5;
+    public static final int SHOW_COMPLETED = 3;
+    public static final int SHOW_WATCHING = 4;
+    public static final int SHOW_TO_WATCH = 5;
 
     private static final String COMPLETED = "Completed";
     private static final String WATCHING = "Watching";
@@ -83,7 +83,6 @@ public class ShowContentProvider extends ContentProvider {
             case SHOW_FILTER:
                 /** Fetch the last segment of the URI, which should be a filter number. */
                 String filter = uri.getLastPathSegment();
-                Log.d("query", "filter: " + filter);
                 /** Leave selection as null to fetch all rows if filter is Show All. Otherwise,
                  * fetch rows with a specific rating according to the parsed filter. */
                 if(Integer.parseInt(filter) == SHOW_COMPLETED) {
@@ -96,11 +95,11 @@ public class ShowContentProvider extends ContentProvider {
                     queryBuilder.appendWhere(ShowTable.SERIES_KEY_STATUS + "=" + "'" + TO_WATCH + "'");
                 }
                 else {
-                    Log.d("query", "not working");
                     selection = null;
                 }
                 break;
             default:
+                break;
                 //throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         /** Perform the database query. */
@@ -191,7 +190,6 @@ public class ShowContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        Log.d("update", "Updating show...");
         SQLiteDatabase sqlDB = this.database.getWritableDatabase();
         int numRowsUpdated = 0;
 
@@ -199,10 +197,9 @@ public class ShowContentProvider extends ContentProvider {
 
         switch(uriType)	{
             case SHOW_ID:
-                String idToDelete = uri.getLastPathSegment();
+                String idToUpdate = uri.getLastPathSegment();
 
-                String whereClause = ShowTable.SERIES_KEY_ID + "=" + idToDelete;
-
+                String whereClause = ShowTable.SERIES_KEY_ID + "=" + idToUpdate;
                 numRowsUpdated += sqlDB.update(ShowTable.DATABASE_TABLE_SHOW, values, whereClause, null);
                 break;
 

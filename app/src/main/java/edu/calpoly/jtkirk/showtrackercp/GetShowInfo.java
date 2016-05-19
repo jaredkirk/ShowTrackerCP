@@ -45,7 +45,6 @@ public class GetShowInfo extends AsyncTask {
     protected Object doInBackground(Object[] params) {
         try {
             HttpTools http = new HttpTools(new DefaultHttpClient());
-            Log.d("search", "Search item: " + params[0].toString());
             TmdbSearch search = new TmdbSearch("dd3119f497ca9130415e36085a740fab", http);
             ResultList<TVBasic> result = search.searchTV(params[0].toString(), null, null, null, null);
 
@@ -54,7 +53,6 @@ public class GetShowInfo extends AsyncTask {
             TmdbTV findTV = new TmdbTV("dd3119f497ca9130415e36085a740fab", http);
             tvInfos = new ArrayList<>();
             for(TVBasic key : results) {
-                Log.d("search", "Found " + key.getName());
                 int id = key.getId();
 
                 tvInfos.add(findTV.getTVInfo(id, "en", append));
