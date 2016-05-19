@@ -21,6 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.omertron.themoviedbapi.model.network.Network;
+import com.omertron.themoviedbapi.model.tv.TVInfo;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -202,7 +205,7 @@ public class SearchForShowActivity extends AppCompatActivity {
         Show searchedShow = null;
         Log.d("searchShow", "Searching for " + show + "...");
 
-        GetShowInformation getShowInformation = new GetShowInformation();
+        GetShowInfo getShowInformation = new GetShowInfo();
 
         getShowInformation.execute(show);
         try {
@@ -213,30 +216,26 @@ public class SearchForShowActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(getShowInformation.getDoc() != null) {
-            //Loop through all the series found
-            NodeList seriesList = getShowInformation.getDoc().getElementsByTagName("Series");
-            for (int temp = 0; temp < seriesList.getLength(); temp++) {
-                Node nNode = seriesList.item(temp);
-
-                //The node is the "Series" root node. Traverse this to find information about this show.
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-
-                    searchedShow = new Show(0,
-                            Integer.parseInt(getElementFromNode(eElement, "id")),
-                            getElementFromNode(eElement, "language"),
-                            getElementFromNode(eElement, "SeriesName"),
-                            getElementFromNode(eElement, "banner"),
-                            getElementFromNode(eElement, "Overview"),
-                            getElementFromNode(eElement, "FirstAired"),
-                            getElementFromNode(eElement, "Network"),
-                            getElementFromNode(eElement, "IMDB_ID"),
-                            "",
-                            0);
-
-                    addShowView(searchedShow);
+        if(getShowInformation.getTvInfos() != null) {
+            for(TVInfo tv : getShowInformation.getTvInfos()) {
+                ArrayList<Network> networks = (ArrayList)tv.getNetworks();
+                String network = "";
+                if(networks != null && networks.size() > 0) {
+                    network += networks.get(0).getName();
                 }
+
+                searchedShow = new Show(0,
+                        tv.getId(),
+                        tv.getOriginalLanguage(),
+                        tv.getName(),
+                        "",
+                        tv.getOverview(),
+                        tv.getFirstAirDate(),
+                        network,
+                        "",
+                        "",
+                        0);
+                addShowView(searchedShow);
             }
         }
 
@@ -250,28 +249,6 @@ public class SearchForShowActivity extends AppCompatActivity {
     public void addShowView(Show show) {
         showList.add(show);
         showViewAdapter.notifyDataSetChanged();
-    }
-
-    //May not need this method, it might be called from MainActivity instead.
-    protected void addShow(Show show) {
-        Uri uri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
-        contentValues.put(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
-        contentValues.put(ShowTable.SERIES_KEY_NAME, show.getName());
-        contentValues.put(ShowTable.SERIES_KEY_BANNER, show.getBanner());
-        contentValues.put(ShowTable.SERIES_KEY_OVERVIEW, show.getOverview());
-        contentValues.put(ShowTable.SERIES_KEY_FIRST_AIRED, show.getFirstAired());
-        contentValues.put(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
-        contentValues.put(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
-        contentValues.put(ShowTable.SERIES_KEY_STATUS, show.getStatus());
-        contentValues.put(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
-
-        Uri uriReturn = getContentResolver().insert(uri, contentValues);
-        int id = Integer.parseInt(uriReturn.getLastPathSegment());
-        show.setId(id);
-        //fillData();
     }
 
     /**

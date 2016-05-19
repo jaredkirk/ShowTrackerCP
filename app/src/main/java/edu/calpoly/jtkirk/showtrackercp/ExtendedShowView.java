@@ -54,6 +54,7 @@ public class ExtendedShowView extends AppCompatActivity {
         image = (ImageView)findViewById(R.id.image);
         initializeText(intent.getExtras());
         initializeStatusSpinner();
+        initializeImage();
     }
 
     @Override
@@ -71,24 +72,7 @@ public class ExtendedShowView extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.edit) {
-
-            /**
-             * Testing new API
-             */
             Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show();
-            GetArtwork getArtwork = new GetArtwork();
-            getArtwork.execute(1399);
-            try {
-                getArtwork.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            Picasso.with(this).load(getArtwork.getImagePath()).into(image);
-
-
             return true;
         }
 
@@ -100,7 +84,7 @@ public class ExtendedShowView extends AppCompatActivity {
      * @param extras The bundle containing the show information.
      */
     public void initializeText(Bundle extras) {
-        showID = extras.getInt(ShowTable.SERIES_KEY_ID);
+        showID = extras.getInt(ShowTable.SERIES_KEY_TVDB_ID);
         status = extras.getString(ShowTable.SERIES_KEY_STATUS);
 
         seriesName = (TextView) findViewById(R.id.extended_series_name);
@@ -195,6 +179,21 @@ public class ExtendedShowView extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void initializeImage() {
+        GetArtwork getArtwork = new GetArtwork();
+        Log.d("artwork", "show id of " + showID);
+        getArtwork.execute(showID);
+        try {
+            getArtwork.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        Picasso.with(this).load(getArtwork.getImagePath()).into(image);
     }
 
 }

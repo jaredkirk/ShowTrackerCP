@@ -4,14 +4,20 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.concurrent.ExecutionException;
+
 import edu.calpoly.jtkirk.showtrackercp.R;
 
 public class ShowView extends LinearLayout  {
+    private ImageView image;
     private TextView nameOfShow;
     private Show show;
     private String name;
@@ -31,6 +37,23 @@ public class ShowView extends LinearLayout  {
         name = show.getName();
         nameOfShow = (TextView) findViewById(R.id.series_name);
         nameOfShow.setText(name); //set the title
+
+        image = (ImageView) findViewById(R.id.series_image);
+    }
+
+    public void initializeImage() {
+        GetArtwork getArtwork = new GetArtwork();
+        Log.d("artwork", "show id of " + show.getTvdbID());
+        getArtwork.execute(show.getTvdbID());
+        try {
+            getArtwork.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        Picasso.with(getContext()).load(getArtwork.getImagePath()).fit().into(image);
     }
 
     /**
@@ -40,6 +63,7 @@ public class ShowView extends LinearLayout  {
     public void setShow(Show show) {
         this.show = show;
         this.name = show.getName();
+        initializeImage();
         nameOfShow.setText(name); //set the title
         episodesSeen.setText(show.getEpisodesSeen() + "");
         notifyOnShowChangeListener();

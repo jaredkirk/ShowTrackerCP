@@ -45,8 +45,10 @@ public class GetArtwork extends AsyncTask {
                 ResultList<Artwork> art = tmdbTV.getTVImages(id, "en", "en");
                 ArrayList<Artwork> artwork = (ArrayList)art.getResults();
 
-                Log.d("test", "Artwork: " + artwork.get(0).getFilePath());
-                imagePath = artwork.get(0).getFilePath();
+                if(artwork != null && artwork.size() > 0) {
+                    Log.d("test", "Artwork: " + artwork.get(0).getFilePath());
+                    imagePath = artwork.get(0).getFilePath();
+                }
             } catch (MovieDbException e) {
                 Log.d("uhoh", "movie exception");
                 e.printStackTrace();
