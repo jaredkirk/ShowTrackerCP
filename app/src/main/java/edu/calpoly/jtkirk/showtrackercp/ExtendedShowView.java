@@ -2,6 +2,8 @@ package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,11 +16,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.concurrent.ExecutionException;
 
 public class ExtendedShowView extends AppCompatActivity {
     TextView seriesName;
@@ -29,6 +39,7 @@ public class ExtendedShowView extends AppCompatActivity {
     TextView network;
     String status;
     int showID;
+    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +51,7 @@ public class ExtendedShowView extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        image = (ImageView)findViewById(R.id.image);
         initializeText(intent.getExtras());
         initializeStatusSpinner();
     }
@@ -59,7 +71,24 @@ public class ExtendedShowView extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.edit) {
+
+            /**
+             * Testing new API
+             */
             Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show();
+            GetArtwork getArtwork = new GetArtwork();
+            getArtwork.execute(1399);
+            try {
+                getArtwork.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            Picasso.with(this).load(getArtwork.getImagePath()).into(image);
+
+
             return true;
         }
 

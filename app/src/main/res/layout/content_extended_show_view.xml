@@ -33,6 +33,16 @@
             </TableRow>
 
             <TableRow>
+                <ImageView
+                    android:id="@+id/image"
+                    android:contentDescription="Series Image"
+                    android:layout_width="300dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitStart"
+                    android:adjustViewBounds="true"/>
+            </TableRow>
+
+            <TableRow>
                 <TextView
                     android:id="@+id/extended_overview"
                     android:paddingTop="10dp"
