@@ -224,13 +224,25 @@ public class SearchForShowActivity extends AppCompatActivity {
                     network += networks.get(0).getName();
                 }
 
+                String firstAired = "Unknown";
+                if(tv.getFirstAirDate() != null) {
+                    firstAired = tv.getFirstAirDate();
+                }
+                String overview = "Unknown";
+                if(tv.getOverview() != null) {
+                    overview = tv.getOverview();
+                }
+                String originalLanguage = "Unknown";
+                if(tv.getOriginalLanguage() != null) {
+                    originalLanguage = tv.getOriginalLanguage();
+                }
                 searchedShow = new Show(0,
                         tv.getId(),
-                        tv.getOriginalLanguage(),
+                        originalLanguage,
                         tv.getName(),
                         "",
-                        tv.getOverview(),
-                        tv.getFirstAirDate(),
+                        overview,
+                        firstAired,
                         network,
                         "",
                         "",

@@ -39,6 +39,7 @@ public class ExtendedShowView extends AppCompatActivity {
     TextView network;
     String status;
     int showID;
+    int movieDBID;
     ImageView image;
 
     @Override
@@ -85,6 +86,7 @@ public class ExtendedShowView extends AppCompatActivity {
      */
     public void initializeText(Bundle extras) {
         showID = extras.getInt(ShowTable.SERIES_KEY_ID);
+        movieDBID = extras.getInt(ShowTable.SERIES_KEY_TVDB_ID);
         status = extras.getString(ShowTable.SERIES_KEY_STATUS);
 
         seriesName = (TextView) findViewById(R.id.extended_series_name);
@@ -183,7 +185,7 @@ public class ExtendedShowView extends AppCompatActivity {
 
     public void initializeImage() {
         GetArtwork getArtwork = new GetArtwork();
-        getArtwork.execute(showID);
+        getArtwork.execute(movieDBID);
         try {
             getArtwork.get();
         } catch (InterruptedException e) {

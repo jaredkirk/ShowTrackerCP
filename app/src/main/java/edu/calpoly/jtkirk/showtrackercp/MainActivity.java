@@ -138,12 +138,12 @@ public class MainActivity extends AppCompatActivity implements android.support.v
                                 pagerAdapter.notifyDataSetChanged();
                                 break;
                             case(1):
-//                                deleteShow(selected_show);
-//                                pagerAdapter.notifyDataSetChanged();
+                                deleteShow(selected_show);
+                                pagerAdapter.notifyDataSetChanged();
                                 break;
                             case(2):
-//                                deleteShow(selected_show);
-//                                pagerAdapter.notifyDataSetChanged();
+                                deleteShow(selected_show);
+                                pagerAdapter.notifyDataSetChanged();
                                 break;
                             default:
                                 break;
