@@ -1,6 +1,7 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 import edu.calpoly.jtkirk.showtrackercp.R;
@@ -37,22 +40,18 @@ public class ShowView extends LinearLayout  {
         name = show.getName();
         nameOfShow = (TextView) findViewById(R.id.series_name);
         nameOfShow.setText(name); //set the title
-
+        this.show = show;
         image = (ImageView) findViewById(R.id.series_image);
+        initializeImage();
     }
 
+    /**
+     * If there is an image, display it in the showview.
+     */
     public void initializeImage() {
-        GetArtwork getArtwork = new GetArtwork();
-        getArtwork.execute(show.getTvdbID());
-        try {
-            getArtwork.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        if(show != null && !show.getBanner().equals("")) {
+            Picasso.with(getContext()).load(show.getBanner()).into(image);
         }
-
-        Picasso.with(getContext()).load(getArtwork.getImagePath()).fit().into(image);
     }
 
     /**
@@ -62,10 +61,10 @@ public class ShowView extends LinearLayout  {
     public void setShow(Show show) {
         this.show = show;
         this.name = show.getName();
-        //initializeImage();
         nameOfShow.setText(name); //set the title
         episodesSeen.setText(show.getEpisodesSeen() + "");
         notifyOnShowChangeListener();
+        initializeImage();
     }
 
     //Set the show listener

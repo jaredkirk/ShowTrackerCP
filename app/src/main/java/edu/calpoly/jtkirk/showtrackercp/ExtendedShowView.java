@@ -1,13 +1,14 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,13 +22,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
 
 public class ExtendedShowView extends AppCompatActivity {
@@ -40,7 +41,9 @@ public class ExtendedShowView extends AppCompatActivity {
     String status;
     int showID;
     int movieDBID;
+    String banner;
     ImageView image;
+    OkHttpDownloader myOKHttpDownloader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,7 @@ public class ExtendedShowView extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-
+        myOKHttpDownloader = new OkHttpDownloader(this);
         image = (ImageView)findViewById(R.id.image);
         initializeText(intent.getExtras());
         initializeStatusSpinner();
@@ -88,7 +91,7 @@ public class ExtendedShowView extends AppCompatActivity {
         showID = extras.getInt(ShowTable.SERIES_KEY_ID);
         movieDBID = extras.getInt(ShowTable.SERIES_KEY_TVDB_ID);
         status = extras.getString(ShowTable.SERIES_KEY_STATUS);
-
+        banner = extras.getString(ShowTable.SERIES_KEY_BANNER);
         seriesName = (TextView) findViewById(R.id.extended_series_name);
 
         String name = extras.getString(ShowTable.SERIES_KEY_NAME);
@@ -183,18 +186,96 @@ public class ExtendedShowView extends AppCompatActivity {
         });
     }
 
+    //save image
+    public static void imageDownload(Context ctx, String url){
+        Picasso.with(ctx)
+                .load(url)
+                .into(getTarget(url));
+    }
+
+    //target to save
+    private static Target getTarget(final String url){
+        Log.d("image", "Getting target...");
+        Target target = new Target(){
+
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                Log.d("image", "Bit map loading...");
+
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Log.d("image", "Running...");
+
+                        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + url);
+                        try {
+                            file.createNewFile();
+                            FileOutputStream ostream = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
+                            ostream.flush();
+                            ostream.close();
+                        } catch (IOException e) {
+                            Log.e("IOException", e.getLocalizedMessage());
+                        }
+                    }
+                }).start();
+
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+        return target;
+    }
+
+    /**
+     * Currently called from the SearchForShowActivity for now
+     */
     public void initializeImage() {
-        GetArtwork getArtwork = new GetArtwork();
-        getArtwork.execute(movieDBID);
+        Log.d("image", "Image path: " + banner);
+        if(banner != null) {
+            Picasso.with(this).load(banner).into(image);
+            Log.d("searchForShow", "finished...");
+        }
+        else {
+            Log.d("show", "Had no image.");
+        }
+    }
+
+    //Source: Stack Overflow
+    // Returns the URI path to the Bitmap displayed in specified ImageView
+    public Uri getLocalBitmapUri(ImageView imageView) {
+        // Extract Bitmap from ImageView drawable
+        Drawable drawable = imageView.getDrawable();
+        Bitmap bmp = null;
+        if (drawable instanceof BitmapDrawable){
+            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } else {
+            return null;
+        }
+        // Store image to default external storage directory
+        Uri bmpUri = null;
         try {
-            getArtwork.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            File file =  new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), "share_image_" + System.currentTimeMillis() + ".png");
+            file.getParentFile().mkdirs();
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            bmpUri = Uri.fromFile(file);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Picasso.with(this).load(getArtwork.getImagePath()).into(image);
+        return bmpUri;
     }
+
 
 }

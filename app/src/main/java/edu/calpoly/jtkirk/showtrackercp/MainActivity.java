@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Watching"));
         tabLayout.addTab(tabLayout.newTab().setText("Completed"));
@@ -422,5 +421,11 @@ public class MainActivity extends AppCompatActivity implements android.support.v
      */
     public android.support.v7.view.ActionMode.Callback getMActionModeCallback() {
         return mActionModeCallback;
+    }
+
+    public void setShowBanner(String banner) {
+        for(Show show : showList) {
+
+        }
     }
 }

@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -19,16 +23,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.omertron.themoviedbapi.model.network.Network;
 import com.omertron.themoviedbapi.model.tv.TVInfo;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -65,9 +75,6 @@ public class SearchForShowActivity extends AppCompatActivity {
 
         initLayout();
         setListeners();
-
-        //GetSeriesBanner banner = new GetSeriesBanner(this);
-        //banner.execute();
 
         //GetApi apiTest = new GetApi();
         //apiTest.execute();
@@ -247,11 +254,90 @@ public class SearchForShowActivity extends AppCompatActivity {
                         "",
                         "",
                         0);
-                addShowView(searchedShow);
+
+                initializeImage(tv.getId(), searchedShow);
             }
         }
 
         return searchedShow;
+    }
+    public void initializeImage(int movieDBID, final Show show) {
+        GetArtwork getArtwork = new GetArtwork();
+        getArtwork.execute(movieDBID);
+        try {
+            getArtwork.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        final ImageView image = new ImageView(this);
+
+        Log.d("searchForShow", "Image path: " + getArtwork.getImagePath());
+
+        if(getArtwork.getImagePath() != null) {
+            Picasso.with(this).load(getArtwork.getImagePath())
+                    .resize(85, 120)
+                    .centerInside()
+                    .into(image, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {
+                    Uri uri = getLocalBitmapUri(image);
+                    Log.d("uri", "uri from the image: " + uri);
+                    //Put image location in the show's database.
+                    Uri showUri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(ShowTable.SERIES_KEY_BANNER, uri.toString());
+                    getContentResolver().update(showUri, contentValues, null, null);
+                    show.setBanner(uri.toString());
+                }
+
+                @Override
+                public void onError() {
+                    Log.d("error", "error...");
+                }
+            });
+            Log.d("searchForShow", "finished...");
+        }
+        else {
+            Log.d("show", show.getName() + " had no image.");
+        }
+        addShowView(show);
+    }
+
+    // Source: Stack Overflow
+    // Returns the URI path to the Bitmap displayed in specified ImageView
+    public Uri getLocalBitmapUri(ImageView imageView) {
+        // Extract Bitmap from ImageView drawable
+        Drawable drawable = imageView.getDrawable();
+        Bitmap bmp = null;
+        if (drawable instanceof BitmapDrawable){
+            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } else {
+            return null;
+        }
+        // Store image to default external storage directory
+        Uri bmpUri = null;
+        try {
+            Log.d("image", "Storing new image...");
+            //Internal Storage Directory.
+            File file =  new File((this
+                    .getApplicationContext().getFileStreamPath("share_image_" + System.currentTimeMillis() + ".png")
+                    .getPath()));
+
+            //External Storage Directory.
+            //File(Environment.getExternalStoragePublicDirectory(
+            //Environment.DIRECTORY_DOWNLOADS) +  "/" + "share_image_" + System.currentTimeMillis() + ".png");
+            file.getParentFile().mkdirs();
+            FileOutputStream out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+            bmpUri = Uri.fromFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bmpUri;
     }
 
     /**
@@ -261,16 +347,6 @@ public class SearchForShowActivity extends AppCompatActivity {
     public void addShowView(Show show) {
         showList.add(show);
         showViewAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * Return the string from the API call that corresponds to the element given.
-     */
-    public String getElementFromNode(Element element, String elementName) {
-        if(element.getElementsByTagName(elementName).item(0) != null) {
-            return element.getElementsByTagName(elementName).item(0).getTextContent();
-        }
-        return "";
     }
 
     /**
