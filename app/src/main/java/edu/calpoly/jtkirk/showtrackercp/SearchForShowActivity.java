@@ -75,9 +75,6 @@ public class SearchForShowActivity extends AppCompatActivity {
 
         initLayout();
         setListeners();
-
-        //GetApi apiTest = new GetApi();
-        //apiTest.execute();
     }
 
     public void initLayout() {
@@ -274,9 +271,8 @@ public class SearchForShowActivity extends AppCompatActivity {
 
         final ImageView image = new ImageView(this);
 
-        Log.d("searchForShow", "Image path: " + getArtwork.getImagePath());
 
-        if(getArtwork.getImagePath() != null) {
+        if(!getArtwork.getImagePath().equals("https://image.tmdb.org/t/p/originalnull")) {
             Picasso.with(this).load(getArtwork.getImagePath())
                     .resize(85, 120)
                     .centerInside()
@@ -284,7 +280,6 @@ public class SearchForShowActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     Uri uri = getLocalBitmapUri(image);
-                    Log.d("uri", "uri from the image: " + uri);
                     //Put image location in the show's database.
                     Uri showUri = Uri.parse(ShowContentProvider.CONTENT_URI + "/series/" + show.getId());
                     ContentValues contentValues = new ContentValues();

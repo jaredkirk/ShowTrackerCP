@@ -1,10 +1,8 @@
 package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,7 +27,6 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class ExtendedShowView extends AppCompatActivity {
     TextView seriesName;
@@ -125,9 +122,6 @@ public class ExtendedShowView extends AppCompatActivity {
         if(!showNetwork.equals("") && network != null) {
             network.setText(showNetwork);
         }
-
-//        status = (TextView) findViewById(R.id.extended_status);
-//        status.setText(extras.getString(ShowTable.SERIES_KEY_STATUS));
     }
 
     /**
@@ -185,13 +179,13 @@ public class ExtendedShowView extends AppCompatActivity {
             }
         });
     }
-
-    //save image
-    public static void imageDownload(Context ctx, String url){
-        Picasso.with(ctx)
-                .load(url)
-                .into(getTarget(url));
-    }
+//
+//    //save image
+//    public static void imageDownload(Context ctx, String url){
+//        Picasso.with(ctx)
+//                .load(url)
+//                .into(getTarget(url));
+//    }
 
     //target to save
     private static Target getTarget(final String url){
@@ -250,32 +244,32 @@ public class ExtendedShowView extends AppCompatActivity {
         }
     }
 
-    //Source: Stack Overflow
-    // Returns the URI path to the Bitmap displayed in specified ImageView
-    public Uri getLocalBitmapUri(ImageView imageView) {
-        // Extract Bitmap from ImageView drawable
-        Drawable drawable = imageView.getDrawable();
-        Bitmap bmp = null;
-        if (drawable instanceof BitmapDrawable){
-            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        } else {
-            return null;
-        }
-        // Store image to default external storage directory
-        Uri bmpUri = null;
-        try {
-            File file =  new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS), "share_image_" + System.currentTimeMillis() + ".png");
-            file.getParentFile().mkdirs();
-            FileOutputStream out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-            bmpUri = Uri.fromFile(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bmpUri;
-    }
+//    //Source: Stack Overflow
+//    // Returns the URI path to the Bitmap displayed in specified ImageView
+//    public Uri getLocalBitmapUri(ImageView imageView) {
+//        // Extract Bitmap from ImageView drawable
+//        Drawable drawable = imageView.getDrawable();
+//        Bitmap bmp = null;
+//        if (drawable instanceof BitmapDrawable){
+//            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+//        } else {
+//            return null;
+//        }
+//        // Store image to default external storage directory
+//        Uri bmpUri = null;
+//        try {
+//            File file =  new File(Environment.getExternalStoragePublicDirectory(
+//                    Environment.DIRECTORY_DOWNLOADS), "share_image_" + System.currentTimeMillis() + ".png");
+//            file.getParentFile().mkdirs();
+//            FileOutputStream out = new FileOutputStream(file);
+//            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+//            out.close();
+//            bmpUri = Uri.fromFile(file);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return bmpUri;
+//    }
 
 
 }

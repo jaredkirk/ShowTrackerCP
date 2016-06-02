@@ -111,7 +111,8 @@ public class TabToWatch extends Fragment implements android.support.v4.app.Loade
                 ((MainActivity)getActivity()).setSelectedShowView((ShowView) getViewByPosition(position, showListView));
 
                 // Start the CAB using the ActionMode.Callback defined above
-                ((MainActivity)getActivity()).startSupportActionMode(((MainActivity) getActivity()).getMActionModeCallback());
+                ((MainActivity)getActivity()).setActionMode();
+
                 return true;
             }
         });
@@ -120,6 +121,7 @@ public class TabToWatch extends Fragment implements android.support.v4.app.Loade
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                ((MainActivity)getActivity()).clearActionMode();
 
                 Show show = (((ShowView) getViewByPosition(position, showListView)).getShow());
 

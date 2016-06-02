@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
     public void initLayout() {
         mActionModeCallback = new ActionMode.Callback() {
-
             // Called when the action mode is created; startActionMode() was called
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -115,21 +114,21 @@ public class MainActivity extends AppCompatActivity implements android.support.v
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.menu_edit:
-                        //TODO Create a new activity to show options for editing a show.
-                        switch(viewPager.getCurrentItem()) {
-                            case(0):
-
-                                break;
-                            case(1):
-                                break;
-                            case(2):
-                                break;
-                            default:
-                                break;
-                        }
-                        mode.finish(); // Action picked, so close the CAB
-                        return true;
+//                    case R.id.menu_edit:
+//                        //TODO Create a new activity to show options for editing a show.
+//                        switch(viewPager.getCurrentItem()) {
+//                            case(0):
+//
+//                                break;
+//                            case(1):
+//                                break;
+//                            case(2):
+//                                break;
+//                            default:
+//                                break;
+//                        }
+//                        mode.finish(); // Action picked, so close the CAB
+//                        return true;
                     case R.id.menu_delete:
                         switch(viewPager.getCurrentItem()) {
                             case(0):
@@ -244,6 +243,8 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         }
         // This will create a new activity to search for shows.
         if (id == R.id.action_search) {
+            clearActionMode();
+
             Intent myIntent = new Intent(this, SearchForShowActivity.class);
             startActivityForResult(myIntent, 1);
             //MainActivity.this.startActivity(myIntent);
@@ -427,5 +428,19 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         for(Show show : showList) {
 
         }
+    }
+
+    /**
+     * Clears the action mode to get rid of the support menu.
+     */
+    public void clearActionMode() {
+        if(this.mActionMode != null) {
+            Log.d("actionmode", "destroyed");
+            this.mActionMode.finish();
+        }
+    }
+
+    public void setActionMode() {
+        mActionMode = startSupportActionMode(mActionModeCallback);
     }
 }

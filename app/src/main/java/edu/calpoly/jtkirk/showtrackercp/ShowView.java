@@ -50,7 +50,11 @@ public class ShowView extends LinearLayout  {
      */
     public void initializeImage() {
         if(show != null && !show.getBanner().equals("")) {
+            Log.d("banner", "banner: " + show.getBanner());
             Picasso.with(getContext()).load(show.getBanner()).into(image);
+        }
+        else {
+            Picasso.with(getContext()).load(R.drawable.noimage).into(image);
         }
     }
 
