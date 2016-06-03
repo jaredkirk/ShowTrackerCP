@@ -2,11 +2,8 @@ package edu.calpoly.jtkirk.showtrackercp;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,24 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 public class ExtendedShowView extends AppCompatActivity {
-    TextView seriesName;
-    TextView overview;
-    TextView episodesSeen;
-    TextView firstAired;
-    TextView language;
-    TextView network;
+    TextView seriesName, overview, episodesSeen, firstAired, language, network, statusTextView, episodesSeenTextView;
     String status;
+    Spinner statusSpinner;
     int showID;
     int movieDBID;
     String banner;
@@ -54,8 +40,21 @@ public class ExtendedShowView extends AppCompatActivity {
         myOKHttpDownloader = new OkHttpDownloader(this);
         image = (ImageView)findViewById(R.id.image);
         initializeText(intent.getExtras());
-        initializeStatusSpinner();
         initializeImage();
+
+        //If coming from a search, don't show user specific information.
+        if(intent.getExtras().getBoolean("hide")) {
+            statusTextView = (TextView) findViewById(R.id.statusTextView);
+            statusTextView.setVisibility(View.GONE);
+            episodesSeenTextView = (TextView) findViewById(R.id.episodesSeenTextView);
+            episodesSeenTextView.setVisibility(View.GONE);
+            episodesSeen.setVisibility(View.GONE);
+            statusSpinner = (Spinner) findViewById(R.id.status_spinner);
+            statusSpinner.setVisibility(View.GONE);
+        }
+        else {
+            initializeStatusSpinner();
+        }
     }
 
     @Override
@@ -72,10 +71,10 @@ public class ExtendedShowView extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.edit) {
-            Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+//        if (id == R.id.edit) {
+//            Toast.makeText(this, "Edit", Toast.LENGTH_SHORT).show();
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -179,97 +178,16 @@ public class ExtendedShowView extends AppCompatActivity {
             }
         });
     }
-//
-//    //save image
-//    public static void imageDownload(Context ctx, String url){
-//        Picasso.with(ctx)
-//                .load(url)
-//                .into(getTarget(url));
-//    }
-
-    //target to save
-    private static Target getTarget(final String url){
-        Log.d("image", "Getting target...");
-        Target target = new Target(){
-
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                Log.d("image", "Bit map loading...");
-
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Log.d("image", "Running...");
-
-                        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + url);
-                        try {
-                            file.createNewFile();
-                            FileOutputStream ostream = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
-                            ostream.flush();
-                            ostream.close();
-                        } catch (IOException e) {
-                            Log.e("IOException", e.getLocalizedMessage());
-                        }
-                    }
-                }).start();
-
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-        return target;
-    }
 
     /**
      * Currently called from the SearchForShowActivity for now
      */
     public void initializeImage() {
-        Log.d("image", "Image path: " + banner);
         if(banner != null) {
             Picasso.with(this).load(banner).into(image);
-            Log.d("searchForShow", "finished...");
         }
         else {
             Log.d("show", "Had no image.");
         }
     }
-
-//    //Source: Stack Overflow
-//    // Returns the URI path to the Bitmap displayed in specified ImageView
-//    public Uri getLocalBitmapUri(ImageView imageView) {
-//        // Extract Bitmap from ImageView drawable
-//        Drawable drawable = imageView.getDrawable();
-//        Bitmap bmp = null;
-//        if (drawable instanceof BitmapDrawable){
-//            bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-//        } else {
-//            return null;
-//        }
-//        // Store image to default external storage directory
-//        Uri bmpUri = null;
-//        try {
-//            File file =  new File(Environment.getExternalStoragePublicDirectory(
-//                    Environment.DIRECTORY_DOWNLOADS), "share_image_" + System.currentTimeMillis() + ".png");
-//            file.getParentFile().mkdirs();
-//            FileOutputStream out = new FileOutputStream(file);
-//            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
-//            out.close();
-//            bmpUri = Uri.fromFile(file);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return bmpUri;
-//    }
-
-
 }

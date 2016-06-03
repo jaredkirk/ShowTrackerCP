@@ -238,9 +238,9 @@ public class MainActivity extends AppCompatActivity implements android.support.v
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
         // This will create a new activity to search for shows.
         if (id == R.id.action_search) {
             clearActionMode();

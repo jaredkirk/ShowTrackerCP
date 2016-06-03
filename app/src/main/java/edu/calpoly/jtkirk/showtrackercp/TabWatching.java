@@ -6,17 +6,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.view.ActionMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -129,6 +126,7 @@ public class TabWatching extends Fragment implements android.support.v4.app.Load
 
                 Intent myIntent = new Intent(getActivity(), ExtendedShowView.class);
 
+                myIntent.putExtra("hide", false);
                 myIntent.putExtra(ShowTable.SERIES_KEY_ID, show.getId());
                 myIntent.putExtra(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
                 myIntent.putExtra(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());

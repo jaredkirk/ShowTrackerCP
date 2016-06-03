@@ -57,7 +57,6 @@ public class SearchForShowActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("Search", "Started the Search Acvitity");
         setContentView(R.layout.activity_search_for_show);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Search");
@@ -177,6 +176,31 @@ public class SearchForShowActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        showListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Show show = (((ShowView) getViewByPosition(position, showListView)).getShow());
+
+                Intent myIntent = new Intent(SearchForShowActivity.this, ExtendedShowView.class);
+
+                myIntent.putExtra("hide", true);
+                myIntent.putExtra(ShowTable.SERIES_KEY_ID, show.getId());
+                myIntent.putExtra(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
+                myIntent.putExtra(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
+                myIntent.putExtra(ShowTable.SERIES_KEY_NAME, show.getName());
+                myIntent.putExtra(ShowTable.SERIES_KEY_BANNER, show.getBanner());
+                myIntent.putExtra(ShowTable.SERIES_KEY_OVERVIEW, show.getOverview());
+                myIntent.putExtra(ShowTable.SERIES_KEY_FIRST_AIRED, show.getFirstAired());
+                myIntent.putExtra(ShowTable.SERIES_KEY_NETWORK, show.getNetwork());
+                myIntent.putExtra(ShowTable.SERIES_KEY_IMDB_ID, show.getImdbID());
+                myIntent.putExtra(ShowTable.SERIES_KEY_STATUS, show.getStatus());
+                myIntent.putExtra(ShowTable.SERIES_KEY_EPISODES_SEEN, show.getEpisodesSeen());
+
+                startActivityForResult(myIntent, 2);
+            }
+        });
     }
 
     @Override
@@ -193,9 +217,9 @@ public class SearchForShowActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -367,5 +391,18 @@ public class SearchForShowActivity extends AppCompatActivity {
 
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
+    }
+
+    //Source: http://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position
+    public View getViewByPosition(int pos, ListView listView) {
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
     }
 }

@@ -45,7 +45,6 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
         //Must be called after the view is created to avoid null pointers.
         showListView = (ListView) view.findViewById(R.id.listViewGroupWatching);
         initLayout();
-
         return view;
     }
 
@@ -116,6 +115,7 @@ public class TabCompleted extends Fragment implements android.support.v4.app.Loa
 
                 Intent myIntent = new Intent(getActivity(), ExtendedShowView.class);
 
+                myIntent.putExtra("hide", false);
                 myIntent.putExtra(ShowTable.SERIES_KEY_ID, show.getId());
                 myIntent.putExtra(ShowTable.SERIES_KEY_TVDB_ID, show.getTvdbID());
                 myIntent.putExtra(ShowTable.SERIES_KEY_LANGUAGE, show.getLanguage());
